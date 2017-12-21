@@ -9,7 +9,6 @@ import huayu.zhang.sys.cluster.Cluster;
 import huayu.zhang.sys.datastructures.BaseDag;
 import huayu.zhang.sys.datastructures.Stage;
 import huayu.zhang.sys.datastructures.StageDag;
-import huayu.zhang.sys.resources.LeftOverResAllocator;
 import huayu.zhang.sys.schedulers.InterJobScheduler;
 import huayu.zhang.sys.schedulers.IntraJobScheduler;
 import huayu.zhang.sys.simulator.Main.Globals;
@@ -44,8 +43,6 @@ public class Simulator {
 
   public static InterJobScheduler interJobSched;
   public static IntraJobScheduler intraJobSched;
-
-  public static LeftOverResAllocator leftOverResAllocator;
 
   // dag_id -> list of tasks
   public static Map<Integer, Set<Integer>> tasksToStartNow;
@@ -106,8 +103,6 @@ public class Simulator {
 
     ds = new DataService(quota.stream().mapToDouble(v -> v).toArray(), config.getNumGlobalPart(), cluster_.getMachines().size(), config.getStrategy());
     es = new ExecuteService(cluster_, interJobSched, intraJobSched, runningJobs, completedJobs, config.getMaxPartitionsPerTask());
-
-    leftOverResAllocator = new LeftOverResAllocator();
 
     tasksToStartNow = new TreeMap<Integer, Set<Integer>>();
 
