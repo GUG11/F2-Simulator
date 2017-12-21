@@ -18,19 +18,9 @@ public class IntraJobScheduler {
   public IntraJobScheduler(Cluster cluster) {
 
     switch (Globals.INTRA_JOB_POLICY) {
-    case Random:
-      resSchedPolicy = new RandomSchedPolicy(cluster);
-      break;
-    case BFS:
-      resSchedPolicy = new BFSSchedPolicy(cluster);
-      break;
     case CP:
       resSchedPolicy = new CPSchedPolicy(cluster);
       break;
-    case Tetris:
-      resSchedPolicy = new TetrisSchedPolicy(cluster);
-      break;
-
     default:
       System.err.println("Unknown sharing policy");
     }

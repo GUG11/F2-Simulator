@@ -26,12 +26,6 @@ public class InterJobScheduler {
     case DRF:
       resSharePolicy = new DRFSharePolicy("DRF", cluster);
       break;
-    case SJF:
-      resSharePolicy = new SJFSharePolicy("SJF");
-      break;
-    case TETRIS_UNIVERSAL:
-      resSharePolicy = new TetrisUniversalSched("Tetris_Universal", cluster);
-      break;
     default:
       System.err.println("Unknown sharing policy");
     }
