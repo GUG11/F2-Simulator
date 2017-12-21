@@ -1,0 +1,255 @@
+[
+  {
+    "name": "0",
+    "dagID": 0,
+    "arrival_time": 0,
+    "quota": 3000,
+    "key_sizes": [10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
+    "stages": [
+      {
+        "name": "Stage_0",
+        "duration": 0.5,
+        "resources": [1.2, 0.6],
+        "num_tasks": 6,
+        "outin_ratio": 1
+      },
+      {
+        "name": "Stage_1",
+        "duration": 1.1,
+        "resources": [0.2, 0.1],
+        "num_tasks": 4,
+        "outin_ratio": 0.5
+      },
+      {
+        "name": "Stage_2",
+        "duration": 0.8,
+        "resources": [1.9, 0.95],
+        "num_tasks": 2,
+        "outin_ratio": 0.1
+      },
+      {
+        "name": "Stage_3",
+        "duration": 1.8,
+        "resources": [2.5, 1.25],
+        "num_tasks": 2,
+        "outin_ratio": 0.1
+      }
+    ],
+    "dependencies": [
+      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
+      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"},
+      {"src": "Stage_2", "dst": "Stage_3", "pattern": "o2o"}
+    ]
+  },
+  {
+    "name": "1",
+    "dagID": 1,
+    "arrival_time": 0.2,
+    "quota": 3000,
+    "key_sizes": [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4],
+    "stages": [
+      {
+        "name": "Stage_0",
+        "duration": 1.1,
+        "resources": [0.4, 1.5],
+        "num_tasks": 8,
+        "outin_ratio": 1
+      },
+      {
+        "name": "Stage_1",
+        "duration": 1.1,
+        "resources": [0.8, 3.0],
+        "num_tasks": 4,
+        "outin_ratio": 0.5
+      },
+      {
+        "name": "Stage_2",
+        "duration": 0.4,
+        "resources": [0.2, 0.6],
+        "num_tasks": 2,
+        "outin_ratio": 0.0
+      }
+    ],
+    "dependencies": [
+      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
+      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"}
+    ]
+  },
+  {
+    "name": "2",
+    "dagID": 2,
+    "arrival_time": 0.8,
+    "quota": 4000,
+    "key_sizes": [8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8],
+    "stages": [
+      {
+        "name": "Stage_0",
+        "duration": 0.3,
+        "resources": [0.6, 0.6],
+        "num_tasks": 10,
+        "outin_ratio": 1
+      },
+      {
+        "name": "Stage_1",
+        "duration": 2.8,
+        "resources": [1.6, 1.6],
+        "num_tasks": 4,
+        "outin_ratio": 0.8
+      },
+      {
+        "name": "Stage_2",
+        "duration": 0.45,
+        "resources": [1.9, 1.9],
+        "num_tasks": 2,
+        "outin_ratio": 0.6
+      },
+      {
+        "name": "Stage_3",
+        "duration": 1.9,
+        "resources": [2.2, 2.2],
+        "num_tasks": 2,
+        "outin_ratio": 0.2
+      },
+      {
+        "name": "Stage_4",
+        "duration": 0.5,
+        "resources": [0.3, 0.3],
+        "num_tasks": 2,
+        "outin_ratio": 0.0
+      }
+    ],
+    "dependencies": [
+      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
+      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"},
+      {"src": "Stage_2", "dst": "Stage_3", "pattern": "o2o"},
+      {"src": "Stage_3", "dst": "Stage_4", "pattern": "o2o"}
+    ]
+  },
+  {
+    "name": "3",
+    "dagID": 3,
+    "arrival_time": 1.0,
+    "quota": 3000,
+    "key_sizes": [10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
+    "stages": [
+      {
+        "name": "Stage_0",
+        "duration": 0.5,
+        "resources": [1.2, 0.6],
+        "num_tasks": 6,
+        "outin_ratio": 1
+      },
+      {
+        "name": "Stage_1",
+        "duration": 1.1,
+        "resources": [0.2, 0.1],
+        "num_tasks": 4,
+        "outin_ratio": 0.5
+      },
+      {
+        "name": "Stage_2",
+        "duration": 0.8,
+        "resources": [2.0, 1.0],
+        "num_tasks": 2,
+        "outin_ratio": 0.1
+      },
+      {
+        "name": "Stage_3",
+        "duration": 1.8,
+        "resources": [2.25, 1.12],
+        "num_tasks": 2,
+        "outin_ratio": 0.1
+      }
+    ],
+    "dependencies": [
+      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
+      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"},
+      {"src": "Stage_2", "dst": "Stage_3", "pattern": "o2o"}
+    ]
+  },
+  {
+    "name": "4",
+    "dagID": 4,
+    "arrival_time": 1.4,
+    "quota": 3000,
+    "key_sizes": [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4],
+    "stages": [
+      {
+        "name": "Stage_0",
+        "duration": 1.1,
+        "resources": [0.4, 1.5],
+        "num_tasks": 8,
+        "outin_ratio": 1
+      },
+      {
+        "name": "Stage_1",
+        "duration": 1.1,
+        "resources": [0.8, 3.0],
+        "num_tasks": 4,
+        "outin_ratio": 0.5
+      },
+      {
+        "name": "Stage_2",
+        "duration": 0.4,
+        "resources": [0.2, 0.6],
+        "num_tasks": 2,
+        "outin_ratio": 0.0
+      }
+    ],
+    "dependencies": [
+      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
+      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"}
+    ]
+  },
+  {
+    "name": "5",
+    "dagID": 5,
+    "arrival_time": 1.4,
+    "quota": 4000,
+    "key_sizes": [8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8],
+    "stages": [
+      {
+        "name": "Stage_0",
+        "duration": 0.3,
+        "resources": [0.6, 0.6],
+        "num_tasks": 10,
+        "outin_ratio": 1
+      },
+      {
+        "name": "Stage_1",
+        "duration": 0.8,
+        "resources": [1.6, 1.6],
+        "num_tasks": 4,
+        "outin_ratio": 0.8
+      },
+      {
+        "name": "Stage_2",
+        "duration": 0.45,
+        "resources": [1.3, 1.3],
+        "num_tasks": 2,
+        "outin_ratio": 0.6
+      },
+      {
+        "name": "Stage_3",
+        "duration": 1.9,
+        "resources": [3.2, 3.2],
+        "num_tasks": 2,
+        "outin_ratio": 0.2
+      },
+      {
+        "name": "Stage_4",
+        "duration": 0.5,
+        "resources": [0.3, 0.3],
+        "num_tasks": 2,
+        "outin_ratio": 0.0
+      }
+    ],
+    "dependencies": [
+      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
+      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"},
+      {"src": "Stage_2", "dst": "Stage_3", "pattern": "o2o"},
+      {"src": "Stage_3", "dst": "Stage_4", "pattern": "o2o"}
+    ]
+  }
+
+]

@@ -1,0 +1,16 @@
+{
+  "global_partitions_per_machine": 10,
+  "max_partitions_in_task": 5,
+  "machines": [
+    {
+      "disk": 2000,
+      "resources": [
+        4.0,
+        16.0
+      ],
+      "failure_rate": 0.01,
+      "replica": 10
+    }
+  ],
+  "strategy": "sep"
+}

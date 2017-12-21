@@ -1,0 +1,246 @@
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: Readyevent queue size: 20
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Running jobs size:1
+Dec 15, 2017 9:00:47 PM carbyne.datastructures.StageDag setInitiallyRunnableStages
+INFO: set initially runnable stages for dag 5
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 0, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 0, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 1, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 1, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 2, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 2, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 3, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 3, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 4, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 4, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 5, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 5, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 6, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 6, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 7, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 7, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 8, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 8, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 9, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 9, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 10, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 10, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 11, lastReady=false content: {1={131=0.7679999999999999, 51=0.7679999999999999, 71=0.7679999999999999, 11=0.7679999999999999, 91=0.7679999999999999, 31=0.7679999999999999, 111=0.7679999999999999}}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 12, lastReady=false content: {1={32=0.7679999999999999, 112=0.7679999999999999, 132=0.7679999999999999, 52=0.7679999999999999, 72=0.7679999999999999, 12=0.7679999999999999, 92=0.7679999999999999}}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 13, lastReady=false content: {1={33=0.7679999999999999, 113=0.7679999999999999, 133=0.7679999999999999, 53=0.7679999999999999, 73=0.7679999999999999, 13=0.7679999999999999, 93=0.7679999999999999}}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 14, lastReady=false content: {1={34=0.7679999999999999, 114=0.7679999999999999, 134=0.7679999999999999, 54=0.7679999999999999, 74=0.7679999999999999, 14=0.7679999999999999, 94=0.7679999999999999}}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 15, lastReady=false content: {1={35=0.7679999999999999, 115=0.7679999999999999, 135=0.7679999999999999, 55=0.7679999999999999, 75=0.7679999999999999, 15=0.7679999999999999, 95=0.7679999999999999}}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 16, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 16, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 17, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 17, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 18, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 18, lastReady=false content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Receive a ready event: dagId: 5, stageName: Stage_3, partitionId: 19, lastReady=true content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvent
+SEVERE: Empty readyEvent: dagId: 5, stageName: Stage_3, partitionId: 19, lastReady=true content: {}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Runnable dag stages: {5=[Stage_4]}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Dag 5Stage Stage_4add runnable task:586
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Dag: 5 Stage: Stage_4, number of runnable tasks=1
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService schedule
+INFO: running jobs: 1
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService schedule
+INFO: schedule dag: 5
+Dec 15, 2017 9:00:47 PM carbyne.schedpolicies.CPSchedPolicy schedule
+FINE: Dag: 5 runnable tasks:1
+Dec 15, 2017 9:00:47 PM carbyne.schedpolicies.CPSchedPolicy schedule
+FINEST: Task 586 to be scheduled
+Dec 15, 2017 9:00:47 PM carbyne.datastructures.StageDag currResShareAvailable
+FINEST: Dag: 5 compute resource available. quota: Resources: [15.4 15.4 ]available: Resources: [15.4 15.4 ]running tasks:0
+Dec 15, 2017 9:00:47 PM carbyne.cluster.Cluster assignTask
+FINE: assign task: 586 from dag:5 on machine:1
+Dec 15, 2017 9:00:47 PM carbyne.cluster.Machine assignTask
+INFO: Assign dag 5stage Stage_4 task 586 to machine 1 expected to finish at: 50.9
+Dec 15, 2017 9:00:47 PM carbyne.cluster.Machine assignTask
+FINE: Dag 5 resource usage: Resources: [0.3 0.3 ]; machine resource usage:Resources: [0.3 0.3 ]
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: 
+==== END STEP_TIME:50.4 ====
+
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: 
+==== STEP_TIME:50.5 ====
+
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService reschedule
+SEVERE: Reschedule kills 0 tasks in total
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: runnable jobs: 0, running jobs: 1, completed jobs: 5
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: [Simulator]: jobCompleted:false newJobArrivals:false
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: Spillevent queue size: 0
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: Readyevent queue size: 0
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Running jobs size:1
+Dec 15, 2017 9:00:47 PM carbyne.datastructures.StageDag setInitiallyRunnableStages
+INFO: set initially runnable stages for dag 5
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Runnable dag stages: {5=[]}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService schedule
+INFO: running jobs: 1
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService schedule
+INFO: schedule dag: 5
+Dec 15, 2017 9:00:47 PM carbyne.schedpolicies.CPSchedPolicy schedule
+FINE: Dag: 5 runnable tasks:0
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: 
+==== END STEP_TIME:50.5 ====
+
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: 
+==== STEP_TIME:50.6 ====
+
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService reschedule
+SEVERE: Reschedule kills 0 tasks in total
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: runnable jobs: 0, running jobs: 1, completed jobs: 5
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: [Simulator]: jobCompleted:false newJobArrivals:false
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: Spillevent queue size: 0
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: Readyevent queue size: 0
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Running jobs size:1
+Dec 15, 2017 9:00:47 PM carbyne.datastructures.StageDag setInitiallyRunnableStages
+INFO: set initially runnable stages for dag 5
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Runnable dag stages: {5=[]}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService schedule
+INFO: running jobs: 1
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService schedule
+INFO: schedule dag: 5
+Dec 15, 2017 9:00:47 PM carbyne.schedpolicies.CPSchedPolicy schedule
+FINE: Dag: 5 runnable tasks:0
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: 
+==== END STEP_TIME:50.6 ====
+
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: 
+==== STEP_TIME:50.7 ====
+
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService reschedule
+SEVERE: Reschedule kills 0 tasks in total
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: runnable jobs: 0, running jobs: 1, completed jobs: 5
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: [Simulator]: jobCompleted:false newJobArrivals:false
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: Spillevent queue size: 0
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: Readyevent queue size: 0
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Running jobs size:1
+Dec 15, 2017 9:00:47 PM carbyne.datastructures.StageDag setInitiallyRunnableStages
+INFO: set initially runnable stages for dag 5
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Runnable dag stages: {5=[]}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService schedule
+INFO: running jobs: 1
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService schedule
+INFO: schedule dag: 5
+Dec 15, 2017 9:00:47 PM carbyne.schedpolicies.CPSchedPolicy schedule
+FINE: Dag: 5 runnable tasks:0
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: 
+==== END STEP_TIME:50.7 ====
+
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: 
+==== STEP_TIME:50.800000000000004 ====
+
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService reschedule
+SEVERE: Reschedule kills 0 tasks in total
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: runnable jobs: 0, running jobs: 1, completed jobs: 5
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: [Simulator]: jobCompleted:false newJobArrivals:false
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: Spillevent queue size: 0
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: Readyevent queue size: 0
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Running jobs size:1
+Dec 15, 2017 9:00:47 PM carbyne.datastructures.StageDag setInitiallyRunnableStages
+INFO: set initially runnable stages for dag 5
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService receiveReadyEvents
+INFO: Runnable dag stages: {5=[]}
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService schedule
+INFO: running jobs: 1
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService schedule
+INFO: schedule dag: 5
+Dec 15, 2017 9:00:47 PM carbyne.schedpolicies.CPSchedPolicy schedule
+FINE: Dag: 5 runnable tasks:0
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: 
+==== END STEP_TIME:50.8 ====
+
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: 
+==== STEP_TIME:50.9 ====
+
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService reschedule
+SEVERE: Reschedule kills 0 tasks in total
+Dec 15, 2017 9:00:47 PM carbyne.cluster.Machine finishTasks
+INFO: Dag 5, stage Stage_4,Task 586 on machine 1 finished
+Dec 15, 2017 9:00:47 PM carbyne.cluster.Machine finishTasks
+FINE: Dag 5 resource usage: Resources: [0.0 0.0 ]; machine resource usage:Resources: [0.0 0.0 ]
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService finishTasks
+INFO: dagId: 5, finished tasks: [586]
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService emit
+INFO: Current dag stage num task map:{0={}, 1={}, 2={}, 3={}, 4={}, 5={Stage_4=1}}. Now choose dag:5,stage:Stage_4
+Dec 15, 2017 9:00:47 PM carbyne.F2.ExecuteService emit
+INFO: Job completed. DagId = 5. Remove it from availablePartitions_
+Dec 15, 2017 9:00:47 PM carbyne.F2.DataService removeCompletedJobs
+FINE: Remove completed dag 5 data from DS
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: runnable jobs: 0, running jobs: 0, completed jobs: 6
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Simulator simulate
+INFO: write statistics to logs/stats.json
+Dec 15, 2017 9:00:47 PM carbyne.simulator.Main main
+INFO: End simulation ...
