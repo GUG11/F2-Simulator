@@ -92,42 +92,21 @@ public class InterJobScheduler {
   // All other policies should be based on Fairness considerations
   public List<Integer> orderedListOfJobsBasedOnPolicy() {
     List<Integer> runningDagsIds = new ArrayList<Integer>();
-    if (Globals.INTER_JOB_POLICY == SharingPolicy.SJF) {
-      final Map<Integer, Double> runnableDagsComparatorVal = new HashMap<Integer, Double>();
-      for (BaseDag dag : Simulator.runningJobs) {
-        runningDagsIds.add(dag.dagId);
-        runnableDagsComparatorVal.put(dag.dagId, ((StageDag) dag).srtfScore());
-      }
-      //    if (Globals.INTER_JOB_POLICY == SharingPolicy.SJF) {
-      Collections.sort(runningDagsIds, new Comparator<Integer>() {
-        public int compare(Integer arg0, Integer arg1) {
-          Double val0 = runnableDagsComparatorVal.get(arg0);
-          Double val1 = runnableDagsComparatorVal.get(arg1);
-          if (val0 < val1)
-            return -1;
-          if (val0 > val1)
-            return 1;
-          return 0;
-        }
-      });
-    }
 
-    else {
-      final Map<Integer, Resources> runnableDagsComparatorVal = new HashMap<Integer, Resources>();
-      for (BaseDag dag : Simulator.runningJobs) {
-        runningDagsIds.add(dag.dagId);
-        Resources farthestFromShare = Resources.subtract(dag.rsrcQuota,
-            dag.rsrcInUse);
-        runnableDagsComparatorVal.put(dag.dagId, farthestFromShare);
-      }
-      Collections.sort(runningDagsIds, new Comparator<Integer>() {
-        public int compare(Integer arg0, Integer arg1) {
-          Resources val0 = runnableDagsComparatorVal.get(arg0);
-          Resources val1 = runnableDagsComparatorVal.get(arg1);
-          return val0.compareTo(val1);
-        }
-      });
+    final Map<Integer, Resources> runnableDagsComparatorVal = new HashMap<Integer, Resources>();
+    for (BaseDag dag : Simulator.runningJobs) {
+      runningDagsIds.add(dag.dagId);
+      Resources farthestFromShare = Resources.subtract(dag.rsrcQuota,
+          dag.rsrcInUse);
+      runnableDagsComparatorVal.put(dag.dagId, farthestFromShare);
     }
+    Collections.sort(runningDagsIds, new Comparator<Integer>() {
+      public int compare(Integer arg0, Integer arg1) {
+        Resources val0 = runnableDagsComparatorVal.get(arg0);
+        Resources val1 = runnableDagsComparatorVal.get(arg1);
+        return val0.compareTo(val1);
+      }
+    });
 
     return runningDagsIds;
   }

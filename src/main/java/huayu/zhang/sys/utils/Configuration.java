@@ -12,6 +12,9 @@ import java.io.FileReader;
 import java.util.logging.Logger;
 
 public class Configuration {
+
+ // public static enum SchedulingPolicy { CP };
+
   private JSONParser parser_;
   private JSONObject jCfg_;
   private int numGlobalPart_;

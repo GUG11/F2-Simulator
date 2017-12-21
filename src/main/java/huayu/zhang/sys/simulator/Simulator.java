@@ -12,7 +12,6 @@ import huayu.zhang.sys.datastructures.StageDag;
 import huayu.zhang.sys.schedulers.InterJobScheduler;
 import huayu.zhang.sys.schedulers.IntraJobScheduler;
 import huayu.zhang.sys.simulator.Main.Globals;
-import huayu.zhang.sys.simulator.Main.Globals.JobsArrivalPolicy;
 import huayu.zhang.sys.utils.Configuration;
 import huayu.zhang.sys.utils.DagParser;
 import huayu.zhang.sys.utils.Randomness;
@@ -36,7 +35,6 @@ public class Simulator {
   private Cluster cluster_;
 
   public static Randomness r;
-  double nextTimeToLaunchJob = 0;
 
   int totalReplayedJobs;
   int lastCompletedJobs;
@@ -70,26 +68,6 @@ public class Simulator {
     System.out.println("Print DAGs");
       for (BaseDag dag : runnableJobs) {
       ((StageDag) dag).viewDag();
-    }
-
-    if (Globals.COMPUTE_STATISTICS) {
-
-      double[] area_makespan = new double[Globals.NUM_DIMENSIONS];
-      System.out.println("#dag_id maxCP area");
-      double total_area = 0.0;
-      for (BaseDag dag : runnableJobs) {
-        StageDag ddag = (StageDag)dag;
-        double[] bottlenecks = new double[Globals.NUM_DIMENSIONS];
-        for (Stage stage : ddag.stages.values()) {
-          bottlenecks[stage.vDemands.resBottleneck()] += 1;
-        }
-        System.out.print(ddag.dagName+" "+ddag.stages.values().size());
-        for (int i = 0; i < Globals.NUM_DIMENSIONS; i++) {
-          System.out.print(" "+bottlenecks[i]/ddag.stages.values().size());
-        }
-        System.out.print("\n");
-      }
-      System.exit(-1);
     }
 
     totalReplayedJobs = runnableJobs.size();
@@ -156,7 +134,6 @@ public class Simulator {
         for (Integer dagId : results.keySet()) {
           System.out.println(dagId+" "+results.get(dagId));
         }
-        System.out.println("NUM_OPT:"+Globals.NUM_OPT+" NUM_PES:"+Globals.NUM_PES);
         // output stats
         JSONObject jStats = es.generateStatistics();
         try (PrintWriter outStats = new PrintWriter(Globals.pathToStatsOutput)) {
@@ -198,66 +175,20 @@ public class Simulator {
 
   boolean handleNewJobArrival() {
     // flag which specifies if jobs have inter-arrival times or starts at t=0
-    System.out.println("handleNewJobArrival; currentTime:"
-        + Simulator.CURRENT_TIME + " nextTime:" + nextTimeToLaunchJob);
-    if (runnableJobs.isEmpty()
-        || ((nextTimeToLaunchJob != Simulator.CURRENT_TIME) && (Globals.JOBS_ARRIVAL_POLICY != JobsArrivalPolicy.Trace))) {
-      return false;
-    }
+    System.out.println("handleNewJobArrival; currentTime:" + Simulator.CURRENT_TIME);
 
-    // start all jobs at time = 0
-    if (Globals.JOBS_ARRIVAL_POLICY == JobsArrivalPolicy.All) {
-      while (!runnableJobs.isEmpty()) {
-        BaseDag newJob = runnableJobs.poll();
-        newJob.jobStartTime = Simulator.CURRENT_TIME;
-        runningJobs.add(newJob);
-        System.out.println("Started job:" + newJob.dagId + " at time:"
+    Set<BaseDag> newlyStartedJobs = new HashSet<BaseDag>();
+    for (BaseDag dag : runnableJobs) {
+      if (dag.timeArrival <= Simulator.CURRENT_TIME) {
+        dag.jobStartTime = Simulator.CURRENT_TIME;
+        newlyStartedJobs.add(dag);
+        System.out.println("Started job:" + dag.dagId + " at time:"
             + Simulator.CURRENT_TIME);
       }
     }
-    else if (Globals.JOBS_ARRIVAL_POLICY == JobsArrivalPolicy.One) {
-      // if no job is running -> poll and add
-      if (Simulator.runningJobs.isEmpty()) {
-        BaseDag newJob = runnableJobs.poll();
-        newJob.jobStartTime = Simulator.CURRENT_TIME;
-        runningJobs.add(newJob);
-        runnableJobs.remove(newJob);
-        System.out.println("Started job:" + newJob.dagId + " at time:"
-            + Simulator.CURRENT_TIME);
-      }
-    }
-    // start one job at a time
-    // compute the next time to launch a job using a distribution
-    else if (Globals.JOBS_ARRIVAL_POLICY == JobsArrivalPolicy.Distribution) {
-
-      do {
-        BaseDag newJob = runnableJobs.poll();
-        assert newJob != null;
-        newJob.jobStartTime = Simulator.CURRENT_TIME;
-
-        runningJobs.add(newJob);
-        nextTimeToLaunchJob = Utils.round(
-            Math.max(Math.ceil(r.GetNormalSample(20, 5)), 2), 0);
-        nextTimeToLaunchJob += Simulator.CURRENT_TIME;
-        System.out.println("Started job:" + newJob.dagId + " at time:"
-            + Simulator.CURRENT_TIME + " next job arrives at time:"
-            + nextTimeToLaunchJob);
-      } while (!runnableJobs.isEmpty()
-          && (nextTimeToLaunchJob == Simulator.CURRENT_TIME));
-    } else if (Globals.JOBS_ARRIVAL_POLICY == JobsArrivalPolicy.Trace) {
-      Set<BaseDag> newlyStartedJobs = new HashSet<BaseDag>();
-      for (BaseDag dag : runnableJobs) {
-        if (dag.timeArrival == Simulator.CURRENT_TIME) {
-          dag.jobStartTime = Simulator.CURRENT_TIME;
-          newlyStartedJobs.add(dag);
-          System.out.println("Started job:" + dag.dagId + " at time:"
-              + Simulator.CURRENT_TIME);
-        }
-      }
-      // clear the datastructures
-      runnableJobs.removeAll(newlyStartedJobs);
-      runningJobs.addAll(newlyStartedJobs);
-    }
+    // clear the datastructures
+    runnableJobs.removeAll(newlyStartedJobs);
+    runningJobs.addAll(newlyStartedJobs);
 
     return true;
   }
