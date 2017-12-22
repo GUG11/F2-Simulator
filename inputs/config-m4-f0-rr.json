@@ -12,5 +12,9 @@
       "replica": 4
     }
   ],
-  "strategy": "rr"
+  "policies": {
+    "interjob": "DRF",
+    "intrajob": "CP",
+    "data": "LQU"
+  }
 }

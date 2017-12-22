@@ -6,7 +6,7 @@ import huayu.zhang.sys.datastructures.Resources;
 import huayu.zhang.sys.datastructures.StageDag;
 import huayu.zhang.sys.sharepolicies.*;
 import huayu.zhang.sys.simulator.Main.Globals;
-import huayu.zhang.sys.simulator.Main.Globals.SharingPolicy;
+import huayu.zhang.sys.utils.Configuration.SharingPolicy;
 import huayu.zhang.sys.simulator.Simulator;
 
 import java.util.*;
@@ -14,12 +14,10 @@ import java.util.*;
 // responsible for recomputing the resource share and update
 // the resource counters for every running job
 public class InterJobScheduler {
-
   public SharePolicy resSharePolicy;
 
-  public InterJobScheduler(Cluster cluster) {
-
-    switch (Globals.INTER_JOB_POLICY) {
+  public InterJobScheduler(Cluster cluster, SharingPolicy sp) {
+    switch (sp) {
     case Fair:
       resSharePolicy = new FairSharePolicy("Fair", cluster);
       break;

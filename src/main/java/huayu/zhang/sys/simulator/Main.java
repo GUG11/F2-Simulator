@@ -1,22 +1,11 @@
 package huayu.zhang.sys.simulator;
 
-import huayu.zhang.sys.simulator.Main.Globals.SchedulingPolicy;
-import huayu.zhang.sys.simulator.Main.Globals.SharingPolicy;
-
 import java.util.logging.Logger;
 
 public class Main {
 
   private static Logger LOG = Logger.getLogger(Main.class.getName());
   public static class Globals {
-
-    public static enum SchedulingPolicy { CP };
-
-    public static SchedulingPolicy INTRA_JOB_POLICY = SchedulingPolicy.CP;
-
-    public enum SharingPolicy { Fair, DRF };
-
-    public static SharingPolicy INTER_JOB_POLICY = SharingPolicy.Fair;
 
     public static int NUM_DIMENSIONS;
 
@@ -25,7 +14,6 @@ public class Main {
 
     public static int MAX_NUM_TASKS_DAG = 3000;
 
-    public static boolean TETRIS_UNIVERSAL = false;
     /**
      * these variables control the sensitivity of the simulator to various factors
      * */
@@ -44,9 +32,7 @@ public class Main {
   public static void main(String[] args) {
 
     String UsageStr = "Usage: java huayu.zhang.sys.simulator.Main pathToConfig pathToDags "
-        + "resource_dim time_step end_time "
-        + "inter_job_policy=[FAIR | DRF] "
-        + "intra_job_policy=[CP]";
+        + "resource_dim time_step end_time ";
 
     // read parameters from command line, if specified
     int curArg = 0;
@@ -86,36 +72,6 @@ public class Main {
     Globals.SIM_END_TIME = Double.parseDouble(args[curArg]); // time end
     curArg++;
 
-    if (args.length == curArg) {
-      LOG.info(UsageStr + ", curArg=" + curArg);
-      System.exit(0);
-    }
-    String UPPER_ARG = args[curArg].toUpperCase();  // inter_job_policy
-    curArg++;
-
-    if (UPPER_ARG.contains("FAIR")) {
-      Globals.INTER_JOB_POLICY = SharingPolicy.Fair;
-    } else if (UPPER_ARG.contains("DRF")) {
-      Globals.INTER_JOB_POLICY = SharingPolicy.DRF;
-    } else {
-      LOG.warning("UNKNOWN INTER_JOB_POLICY");
-      System.exit(0);
-    }
-    if (args.length == curArg) {
-      LOG.info(UsageStr + ", curArg=" + curArg);
-      LOG.info(UsageStr);
-      System.exit(0);
-    }
-
-    UPPER_ARG = args[curArg].toUpperCase();  // intra_job_policy
-    curArg++;
-    if (UPPER_ARG.contains("CP")) {
-      Globals.INTRA_JOB_POLICY = SchedulingPolicy.CP;
-    } else {
-      LOG.warning("UNKNOWN INTRA_JOB_POLICY");
-      System.exit(0);
-    }
-
     // sensitivity
     if (args.length != curArg) {
       LOG.info(UsageStr + ", curArg=" + curArg + ", args.length=" + args.length);
@@ -131,8 +87,6 @@ public class Main {
     System.out.println("SIMULATION_END_TIME = " + Globals.SIM_END_TIME);
     System.out.println("STEP_TIME           = " + Globals.STEP_TIME);
     System.out.println("NUM_DIMENSIONS      = " + Globals.NUM_DIMENSIONS);
-    System.out.println("INTER_JOB_POLICY    = " + Globals.INTER_JOB_POLICY);
-    System.out.println("INTRA_JOB_POLICY    = " + Globals.INTRA_JOB_POLICY);
     System.out.println("=====================\n");
 
     LOG.info("Start simulation ...");

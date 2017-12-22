@@ -4,7 +4,7 @@ import huayu.zhang.sys.cluster.Cluster;
 import huayu.zhang.sys.datastructures.Resources;
 import huayu.zhang.sys.datastructures.StageDag;
 import huayu.zhang.sys.schedpolicies.*;
-import huayu.zhang.sys.simulator.Main.Globals;
+import huayu.zhang.sys.utils.Configuration.SchedulingPolicy;
 
 // responsible for scheduling tasks inside a Job
 // it can adopt various strategies such as Random, Critical Path
@@ -15,9 +15,9 @@ public class IntraJobScheduler {
 
   public SchedPolicy resSchedPolicy;
 
-  public IntraJobScheduler(Cluster cluster) {
+  public IntraJobScheduler(Cluster cluster, SchedulingPolicy schedPolicy) {
 
-    switch (Globals.INTRA_JOB_POLICY) {
+    switch (schedPolicy) {
     case CP:
       resSchedPolicy = new CPSchedPolicy(cluster);
       break;

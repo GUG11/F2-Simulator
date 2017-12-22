@@ -1,10 +1,12 @@
 package huayu.zhang.sys.F2;
 
+import java.util.*;
 import java.util.logging.Logger;
 
 import huayu.zhang.sys.datastructures.BaseDag;
 import huayu.zhang.sys.simulator.Simulator;
-import java.util.*;
+import huayu.zhang.sys.utils.Configuration.DataPolicy;
+
 
 public class DataService {
   private double[] quota_;  // quota per job
@@ -12,23 +14,21 @@ public class DataService {
   private int numGlobalPart_;
   private Map<Integer, double[]> usagePerJob_;   // <DagId, list<usage>>
   private Map<Integer, Map<String, StageOutput>> stageOutputPerJob_;  // <DagId, <StageName, intermediate data>>
-  private String strategy_;   // R&R, parent-child separate
-
-  private static final String STRATEGY_SEPARATE = "separate";
+  private DataPolicy dataPolicy_;   // least quota usage, parent-child separate
 
   // statistics
   private int statNumSpreadEvents_ = 0;
 
   private static Logger LOG = Logger.getLogger(DataService.class.getName());
 
-  public DataService(double[] quota, int numGlobalPart, int numMachines, String strategy) {
+  public DataService(double[] quota, int numGlobalPart, int numMachines, DataPolicy dataPolicy) {
     quota_ = quota;
     numGlobalPart_ = numGlobalPart;
     numMachines_ = numMachines;
     usagePerJob_ = new HashMap<>();
     stageOutputPerJob_ = new HashMap<>();
-    strategy_ = strategy;
-    LOG.info(String.format("DS created. numMachines: %d, numGlobalPart: %d, strategy: %s", numMachines_, numGlobalPart_, strategy_));
+    dataPolicy_ = dataPolicy;
+    LOG.info(String.format("DS created. numMachines: %d, numGlobalPart: %d, data policy:", numMachines_, numGlobalPart_) + dataPolicy);
   }
 
   public void removeCompletedJobs(Queue<BaseDag> completedJobs) {
@@ -67,16 +67,15 @@ public class DataService {
     }
     Map<String, StageOutput> dagIntermediateData = stageOutputPerJob_.get(dagId);
     if (!dagIntermediateData.containsKey(stageName)) {
-      // TODO
       List<Integer> blackList = new ArrayList<>();
-      if (strategy_.equals(STRATEGY_SEPARATE)) {
+      if (dataPolicy_ == DataPolicy.CPS) {
         if (dagIntermediateData.containsKey(parentStageName)) {
           int[] pMIds = dagIntermediateData.get(parentStageName).getMachineIds();
           for (int i = 0; i < pMIds.length; i++) {
             blackList.add(pMIds[i]);
           }
         }
-        LOG.info("Use " + STRATEGY_SEPARATE + " strategy. Blacklist: " + blackList);
+        LOG.info("Use CPS policy. Blacklist: " + blackList);
       }
       dagIntermediateData.put(stageName, new StageOutput(usagePerJob_.get(dagId), quota_[dagId], numGlobalPart_, blackList));
     }

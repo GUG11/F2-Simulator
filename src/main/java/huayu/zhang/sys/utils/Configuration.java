@@ -13,13 +13,18 @@ import java.util.logging.Logger;
 
 public class Configuration {
 
- // public static enum SchedulingPolicy { CP };
+  public static enum SchedulingPolicy { CP };
+  public static enum SharingPolicy { Fair, DRF };
+  public static enum DataPolicy { LQU, CPS };
 
   private JSONParser parser_;
   private JSONObject jCfg_;
   private int numGlobalPart_;
   private int maxPartitionsPerTask_;
-  private String strategy_;
+
+  SchedulingPolicy schePolicy_;
+  SharingPolicy sharePolicy_;
+  DataPolicy dataPolicy_;
 
   private static Logger LOG = Logger.getLogger(Configuration.class.getName());
 
@@ -29,7 +34,9 @@ public class Configuration {
 
   public int getNumGlobalPart() { return numGlobalPart_; }
   public int getMaxPartitionsPerTask() { return maxPartitionsPerTask_; }
-  public String getStrategy() { return strategy_; }
+  public SchedulingPolicy getSchedPolicy() { return schePolicy_; }
+  public SharingPolicy getSharePolicy() { return sharePolicy_; }
+  public DataPolicy getDataPolicy() { return dataPolicy_; }
 
   public void parseConfigFile(String filePath) {
     try {
@@ -38,9 +45,43 @@ public class Configuration {
       LOG.info("parse configuration file " + filePath);
       numGlobalPart_ = Integer.parseInt(jCfg_.get("global_partitions_per_machine").toString());
       maxPartitionsPerTask_ = Integer.parseInt(jCfg_.get("max_partitions_in_task").toString());
-      strategy_ = jCfg_.get("strategy").toString();
+      JSONObject jPolicy = (JSONObject)jCfg_.get("policies");
+      parseSchedPolicy(jPolicy.get("intrajob").toString());
+      parseSharePolicy(jPolicy.get("interjob").toString());
+      parseDataPolicy(jPolicy.get("data").toString());
     } catch (Exception e) {
       System.err.println("Catch exception: " + e);
+    }
+  }
+
+  public void parseSchedPolicy(String spStr) {
+    if (spStr.equals("CP")) {
+      schePolicy_ = SchedulingPolicy.CP;
+    } else {
+      LOG.warning("UNKNOWN INTRA_JOB_POLICY");
+      System.exit(0);
+    }
+  }
+
+  public void parseSharePolicy(String spStr) {
+    if (spStr.equals("FAIR")) {
+      sharePolicy_ = SharingPolicy.Fair;
+    } else if (spStr.equals("DRF")) {
+      sharePolicy_ = SharingPolicy.DRF;
+    } else {
+      LOG.warning("UNKNOWN INTER_JOB_POLICY");
+      System.exit(0);
+    }
+  }
+
+  public void parseDataPolicy(String dpStr) {
+    if (dpStr.equals("LQU")) {
+      dataPolicy_ = DataPolicy.LQU;
+    } else if (dpStr.equals("CPS")) {
+      dataPolicy_ = DataPolicy.CPS;
+    } else {
+      LOG.warning("UNKNOWN INTER_JOB_POLICY");
+      System.exit(0);
     }
   }
 

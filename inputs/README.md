@@ -5,6 +5,7 @@ To faciliate configuration management and parameter tuning, F2-Sim uses two json
 ## Cluster
 
 * time_step: schedule every time_step, double
+* time_end: end time, double
 * global_partitions_per_machine: number of global partitions per machine, int
 * max_partitions_in_task: max number of partitions one task can handle, int
 * machines: array of maps

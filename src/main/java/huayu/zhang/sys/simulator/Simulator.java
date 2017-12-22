@@ -76,10 +76,10 @@ public class Simulator {
 
     cluster_ = new Cluster(true);
     config.populateCluster(cluster_);
-    interJobSched = new InterJobScheduler(cluster_);
-    intraJobSched = new IntraJobScheduler(cluster_);
+    interJobSched = new InterJobScheduler(cluster_, config.getSharePolicy());
+    intraJobSched = new IntraJobScheduler(cluster_, config.getSchedPolicy());
 
-    ds = new DataService(quota.stream().mapToDouble(v -> v).toArray(), config.getNumGlobalPart(), cluster_.getMachines().size(), config.getStrategy());
+    ds = new DataService(quota.stream().mapToDouble(v -> v).toArray(), config.getNumGlobalPart(), cluster_.getMachines().size(), config.getDataPolicy());
     es = new ExecuteService(cluster_, interJobSched, intraJobSched, runningJobs, completedJobs, config.getMaxPartitionsPerTask());
 
     tasksToStartNow = new TreeMap<Integer, Set<Integer>>();
