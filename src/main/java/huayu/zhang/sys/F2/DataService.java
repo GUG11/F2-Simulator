@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import huayu.zhang.sys.datastructures.BaseDag;
-import huayu.zhang.sys.simulator.Simulator;
 import huayu.zhang.sys.utils.Configuration.DataPolicy;
 
 

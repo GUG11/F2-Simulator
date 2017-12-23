@@ -46,7 +46,7 @@ public class DagParser {
     JSONArray jStages = (JSONArray)jDag.get("stages");
     for (int i = 0; i < jStages.size(); i++) {
       JSONObject jStage = (JSONObject)jStages.get(i);
-      dag.stages.put(jStage.get("name").toString(), parseStage(jStage, i));
+      dag.stages.put(jStage.get("name").toString(), parseStage(jStage));
     }
     JSONArray jDeps = (JSONArray)jDag.get("dependencies");
     for (Object jDep: jDeps) {
@@ -66,12 +66,12 @@ public class DagParser {
     return dag;
   }
 
-  public Stage parseStage(JSONObject jStage, int i) {
+  public Stage parseStage(JSONObject jStage) {
     int numTask = Integer.parseInt(jStage.get("num_tasks").toString());
     double outinRatio = Double.parseDouble(jStage.get("outin_ratio").toString());
     double[] resc = ((JSONArray)jStage.get("resources")).stream().mapToDouble(x -> Double.valueOf(x.toString()) ).toArray();
     assert Globals.NUM_DIMENSIONS == resc.length;
-    return new Stage(jStage.get("name").toString(), i, numTask,
+    return new Stage(jStage.get("name").toString(), numTask,
           Double.parseDouble(jStage.get("duration").toString()),
           resc, outinRatio);
   }

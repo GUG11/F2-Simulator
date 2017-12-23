@@ -248,7 +248,7 @@ public class StageDag extends BaseDag {
     System.out.println("\n == DAG: " + this.dagId + " ==");
 
     for (Stage stage : stages.values()) {
-      System.out.print("Stage: " + stage.id + " "+stage.name + ", duration:" + stage.vDuration + ", ");
+      System.out.print("Stage: " + stage.name + ", duration:" + stage.vDuration + ", ");
       System.out.println(stage.vDemands);
 
       System.out.print("Maximum Parallel Tasks:" + stage.getNumTasks());
@@ -398,10 +398,6 @@ public class StageDag extends BaseDag {
       double updatedVal = BFSOrder.get(tId);
       BFSOrder.put(tId, currentLevel - updatedVal);
     }
-  }
-
-  public int getStageIdByTaskId(int taskId) {
-    return stages.get(vertexToStage.get(taskId)).id;
   }
 
   // end DAG traversals //

@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class Stage {
-
-  public int id;
   public String name;
 
   private Set<Integer> taskIds_;
@@ -21,10 +19,9 @@ public class Stage {
 
   public Map<String, Dependency> parents, children;  // <stageName, dependency>
 
-  public Stage(String name, int id, int numTasks, double duration,
+  public Stage(String name, int numTasks, double duration,
       double[] resources, double outinRatio) {
     this.name = name;
-    this.id = id;
     numTasks_ = numTasks;
     outinRatio_ = outinRatio;
 
