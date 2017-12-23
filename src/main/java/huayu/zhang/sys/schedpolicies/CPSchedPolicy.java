@@ -21,7 +21,7 @@ public class CPSchedPolicy extends SchedPolicy {
   }
 
   @Override
-  public void schedule(final StageDag dag) {
+  public void schedule(final StageDag dag, double currentTime) {
 
     // no tasks to be scheduled -> skip
     LOG.fine("Dag: " + dag.dagId + " runnable tasks:" + dag.runnableTasks.size());
@@ -64,10 +64,10 @@ public class CPSchedPolicy extends SchedPolicy {
       boolean assigned = false;
       if (preferedMachine == -1) {
         assigned = cluster_.assignTask(dag, taskId,
-            dag.duration(taskId), dag.rsrcDemands(taskId));
+            dag.duration(taskId), dag.rsrcDemands(taskId), currentTime);
       } else {
         assigned = cluster_.assignTask(preferedMachine, dag, taskId,
-            dag.duration(taskId), dag.rsrcDemands(taskId));
+            dag.duration(taskId), dag.rsrcDemands(taskId), currentTime);
       }
 
       if (assigned) {
@@ -88,8 +88,4 @@ public class CPSchedPolicy extends SchedPolicy {
     dag.launchedTasksNow.clear();
   }
 
-  @Override
-  public double planSchedule(StageDag dag, Resources leftOverResources) {
-    return -1;
-  }
 }

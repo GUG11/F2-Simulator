@@ -1,4 +1,8 @@
 {
+  "end_time": 50.0,
+  "time_step": 0.1,
+  "num_rsrc_dims": 2,
+  "num_max_dags": 3000,
   "global_partitions_per_machine": 10,
   "max_partitions_in_task": 5,
   "machines": [

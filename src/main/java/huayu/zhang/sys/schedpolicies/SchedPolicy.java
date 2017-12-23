@@ -12,7 +12,5 @@ public abstract class SchedPolicy {
     cluster_ = cluster;
   }
 
-  public abstract void schedule(StageDag dag);
-
-  public abstract double planSchedule(StageDag dag, Resources leftOverResources);
+  public abstract void schedule(StageDag dag, double currentTime);
 }

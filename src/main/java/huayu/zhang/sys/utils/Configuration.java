@@ -17,10 +17,13 @@ public class Configuration {
   public static enum SharingPolicy { Fair, DRF };
   public static enum DataPolicy { LQU, CPS };
 
+
   private JSONParser parser_;
   private JSONObject jCfg_;
   private int numGlobalPart_;
   private int maxPartitionsPerTask_;
+  private double endTime_;
+  private double timeStep_;
 
   SchedulingPolicy schePolicy_;
   SharingPolicy sharePolicy_;
@@ -34,6 +37,8 @@ public class Configuration {
 
   public int getNumGlobalPart() { return numGlobalPart_; }
   public int getMaxPartitionsPerTask() { return maxPartitionsPerTask_; }
+  public double getEndTime() { return endTime_; }
+  public double getTimeStep() { return timeStep_; }
   public SchedulingPolicy getSchedPolicy() { return schePolicy_; }
   public SharingPolicy getSharePolicy() { return sharePolicy_; }
   public DataPolicy getDataPolicy() { return dataPolicy_; }
@@ -45,6 +50,10 @@ public class Configuration {
       LOG.info("parse configuration file " + filePath);
       numGlobalPart_ = Integer.parseInt(jCfg_.get("global_partitions_per_machine").toString());
       maxPartitionsPerTask_ = Integer.parseInt(jCfg_.get("max_partitions_in_task").toString());
+
+      timeStep_ = Double.parseDouble(jCfg_.get("time_step").toString());
+      endTime_ = Double.parseDouble(jCfg_.get("end_time").toString());
+
       JSONObject jPolicy = (JSONObject)jCfg_.get("policies");
       parseSchedPolicy(jPolicy.get("intrajob").toString());
       parseSharePolicy(jPolicy.get("interjob").toString());

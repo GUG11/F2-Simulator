@@ -26,14 +26,10 @@ public class IntraJobScheduler {
     }
   }
 
-  public void schedule(StageDag dag) {
+  public void schedule(StageDag dag, double currentTime) {
     // while tasks can be assigned in my resource
     // share quanta, on any machine, keep assigning
     // otherwise return
-    resSchedPolicy.schedule(dag);
-  }
-
-  public double planSchedule(StageDag dag, Resources leftOverResources) {
-    return resSchedPolicy.planSchedule(dag, leftOverResources);
+    resSchedPolicy.schedule(dag, currentTime);
   }
 }

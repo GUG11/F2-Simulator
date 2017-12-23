@@ -30,7 +30,7 @@ public class Cluster {
   }
 
   public boolean assignTask(int machineId, StageDag dag, int taskId,
-      double taskDuration, Resources taskResources) {
+      double taskDuration, Resources taskResources, double currentTime) {
     LOG.fine("assign task: "+taskId+" from dag:"+dag.dagId+" on machine:"+machineId);
     Machine machine = machines.get(machineId);
     assert (machine != null);
@@ -39,13 +39,13 @@ public class Cluster {
       LOG.warning("ERROR: dag " + dag.dagId + ", stage:" + dag.vertexToStage.get(taskId) +  ", task: " + taskId +  " should fit");
       return false;
     }
-    machine.assignTask(dag, taskId, taskDuration, taskResources);
+    machine.assignTask(dag, taskId, taskDuration, taskResources, currentTime);
     return true;
   }
 
   // checks for fitting in resShare should already be done
   public boolean assignTask(StageDag dag, int taskId, double taskDuration,
-      Resources taskResources) {
+      Resources taskResources, double currentTime) {
 
     // find the first machine where the task can fit
     // put it there
@@ -54,7 +54,7 @@ public class Cluster {
       if (!fit)
         continue;
 
-      machine.assignTask(dag, taskId, taskDuration, taskResources);
+      machine.assignTask(dag, taskId, taskDuration, taskResources, currentTime);
 
       return true;
     }
@@ -62,15 +62,14 @@ public class Cluster {
   }
 
   // return: [Key: dagId -- Value: List<taskId>]
-  public Map<Integer, List<Integer>> finishTasks(double... earliestFinishTime) {
+  public Map<Integer, List<Integer>> finishTasks(double currentTime) {
 
     // finish any task on this machine at the current time
     Map<Integer, List<Integer>> finishedTasks = new HashMap<Integer, List<Integer>>();
 
-    System.out.println("Cluster starts collecting finihsTasks. Current Time: " + Simulator.CURRENT_TIME);
+    System.out.println("Cluster starts collecting finihsTasks. Current Time: " + currentTime);
     for (Machine machine : machines) {
-      Map<Integer, List<Integer>> finishedTasksMachine = execMode ? machine
-          .finishTasks() : machine.finishTasks((double) earliestFinishTime[0]);
+      Map<Integer, List<Integer>> finishedTasksMachine = machine.finishTasks(currentTime);
 
       for (Map.Entry<Integer, List<Integer>> entry : finishedTasksMachine
           .entrySet()) {
@@ -81,17 +80,16 @@ public class Cluster {
         }
         finishedTasks.get(dagId).addAll(tasksFinishedDagId);
       }
-      machine.currentTime = execMode ? 0.0 : (double) earliestFinishTime[0];
     }
 
     // update the currentTime with the earliestFinishTime on every machine
     return finishedTasks;
   }
 
-  public List<Integer> failMachines() {
+  public List<Integer> failMachines(double currentTime) {
     List<Integer> failedList = new ArrayList<>();
     for (Machine m: machines) {
-      if (m.failureNow()) {
+      if (m.failureNow(currentTime)) {
         failedList.add(m.getMachineId());
       }
     }

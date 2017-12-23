@@ -26,8 +26,12 @@ import org.json.simple.JSONObject;
 public class Simulator {
   private static Logger LOG = Logger.getLogger(Simulator.class.getName());
 
-  public static double CURRENT_TIME = 0;
+  // time
+  private final double endTime_;
+  private final double timeStep_;
+  private double currentTime_;
 
+  // job queues
   public static Queue<BaseDag> runnableJobs;
   public static Queue<BaseDag> runningJobs;
   public static Queue<BaseDag> completedJobs;
@@ -45,19 +49,24 @@ public class Simulator {
   // dag_id -> list of tasks
   public static Map<Integer, Set<Integer>> tasksToStartNow;
 
+  // event queues
   private Queue<SpillEvent> spillEventQueue_;
   private Queue<ReadyEvent> readyEventQueue_;
 
   private DataService ds;
   private ExecuteService es;
 
-  public Cluster getCluster() { return cluster_; }
+  // file paths
+  private final String pathToStatsOutput_;
 
-  public Simulator() {
+
+  public Simulator(String pathToInputDagFile, String pathToConfigFile,
+      String pathToStatsOutput) {
     Configuration config = new Configuration();
     DagParser dagParser = new DagParser();
-    runnableJobs = dagParser.parseDAGSpecFile(Globals.pathToInputDagFile);
-    config.parseConfigFile(Globals.pathToConfig);
+    runnableJobs = dagParser.parseDAGSpecFile(pathToInputDagFile);
+    config.parseConfigFile(pathToConfigFile);
+    pathToStatsOutput_ = pathToStatsOutput;
     List<Double> quota = new ArrayList<Double>();
     for (BaseDag dag: runnableJobs) {
       quota.add(((StageDag)dag).getQuota());
@@ -82,6 +91,9 @@ public class Simulator {
     ds = new DataService(quota.stream().mapToDouble(v -> v).toArray(), config.getNumGlobalPart(), cluster_.getMachines().size(), config.getDataPolicy());
     es = new ExecuteService(cluster_, interJobSched, intraJobSched, runningJobs, completedJobs, config.getMaxPartitionsPerTask());
 
+    endTime_ = Utils.round(config.getEndTime(), 2);
+    timeStep_ = Utils.round(config.getTimeStep(), 2);
+
     tasksToStartNow = new TreeMap<Integer, Set<Integer>>();
 
     r = new Randomness();
@@ -89,14 +101,14 @@ public class Simulator {
 
   public void simulate() {
 
-    for (Simulator.CURRENT_TIME = 0; Simulator.CURRENT_TIME < Globals.SIM_END_TIME; Simulator.CURRENT_TIME += Globals.STEP_TIME) {
-      LOG.info("\n==== STEP_TIME:" + Simulator.CURRENT_TIME
+    for (currentTime_ = 0; currentTime_ < endTime_; currentTime_ += timeStep_) {
+      LOG.info("\n==== STEP_TIME:" + currentTime_
           + " ====\n");
 
-      Simulator.CURRENT_TIME = Utils.round(Simulator.CURRENT_TIME, 2);
+      currentTime_ = Utils.round(currentTime_, 2);
 
       // fail machine
-      List<Integer> failedList = cluster_.failMachines();
+      List<Integer> failedList = cluster_.failMachines(currentTime_);
       ds.nodesFailure(failedList);    // update DS
       es.nodesFailure(failedList);    // update ES
 
@@ -107,7 +119,7 @@ public class Simulator {
       // resources
 
       // update jobs status with newly finished tasks
-      boolean jobCompleted = es.finishTasks(spillEventQueue_);
+      boolean jobCompleted = es.finishTasks(spillEventQueue_, currentTime_);
       ds.removeCompletedJobs(completedJobs);
 
       LOG.info("runnable jobs: " + runnableJobs.size() + ", running jobs: " + runningJobs.size()
@@ -136,9 +148,9 @@ public class Simulator {
         }
         // output stats
         JSONObject jStats = es.generateStatistics();
-        try (PrintWriter outStats = new PrintWriter(Globals.pathToStatsOutput)) {
+        try (PrintWriter outStats = new PrintWriter(pathToStatsOutput_)) {
           outStats.println(jStats.toString());
-          LOG.info("write statistics to " + Globals.pathToStatsOutput);
+          LOG.info("write statistics to " + pathToStatsOutput_);
         } catch (IOException e) {
           System.out.println(e);
         }
@@ -149,11 +161,6 @@ public class Simulator {
       boolean newJobArrivals = handleNewJobArrival();
       boolean needInterJobScheduling = newJobArrivals || jobCompleted;
 
-      /* if (!jobCompleted && !newJobArrivals && spillEventQueue_.isEmpty()) {
-        LOG.info("\n==== END STEP_TIME:" + Simulator.CURRENT_TIME
-            + " ====\n");
-        continue;
-      } */
       LOG.info("[Simulator]: jobCompleted:" + jobCompleted
         + " newJobArrivals:" + newJobArrivals);
 
@@ -161,10 +168,9 @@ public class Simulator {
       ds.receiveSpillEvents(spillEventQueue_, readyEventQueue_);
       LOG.info("Readyevent queue size: " + readyEventQueue_.size());
       es.receiveReadyEvents(needInterJobScheduling, readyEventQueue_);
-      es.schedule();
+      es.schedule(currentTime_);
 
-      LOG.info("\n==== END STEP_TIME:" + Simulator.CURRENT_TIME
-          + " ====\n");
+      LOG.info("\n==== END STEP_TIME:" + currentTime_ + " ====\n");
     }
   }
 
@@ -175,15 +181,15 @@ public class Simulator {
 
   boolean handleNewJobArrival() {
     // flag which specifies if jobs have inter-arrival times or starts at t=0
-    System.out.println("handleNewJobArrival; currentTime:" + Simulator.CURRENT_TIME);
+    System.out.println("handleNewJobArrival; currentTime:" + currentTime_);
 
     Set<BaseDag> newlyStartedJobs = new HashSet<BaseDag>();
     for (BaseDag dag : runnableJobs) {
-      if (dag.timeArrival <= Simulator.CURRENT_TIME) {
-        dag.jobStartTime = Simulator.CURRENT_TIME;
+      if (dag.timeArrival <= currentTime_) {
+        dag.jobStartTime = currentTime_;
         newlyStartedJobs.add(dag);
         System.out.println("Started job:" + dag.dagId + " at time:"
-            + Simulator.CURRENT_TIME);
+            + currentTime_);
       }
     }
     // clear the datastructures
@@ -211,4 +217,6 @@ public class Simulator {
     return null;
   }
 
+  public Cluster getCluster() { return cluster_; }
+  public double getCurrentTime() { return currentTime_; }
 }

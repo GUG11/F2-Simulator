@@ -22,9 +22,6 @@ public class Machine {
   boolean execMode;
   public Cluster cluster;
 
-
-  public double currentTime = 0;
-
   // max capacity of this machine
   // default is 1.0 across all dimensions
   Resources maxResAlloc;
@@ -36,7 +33,6 @@ public class Machine {
   public Machine(int machineId, Resources size, double diskVolume, double failureRate, boolean execMode) {
     this.machineId = machineId;
     this.execMode = execMode;
-    this.currentTime = Simulator.CURRENT_TIME;
     this.failureRate_ = failureRate;
     totalResAlloc = new Resources();
     assert size != null;
@@ -44,7 +40,7 @@ public class Machine {
     runningTasks = new HashMap<Task, Double>();
     this.diskVolume_ = diskVolume;
     this.rand_ = new Random();
-    this.nextFailureTime_ = this.computeNextFailureTime(this.failureRate_);
+    this.nextFailureTime_ = this.computeNextFailureTime(0, this.failureRate_);
     System.out.println("Initialize machine: "+machineId+" "+size + " failure rate:" + failureRate + " initial failure time: " + nextFailureTime_ + " execMode:" + execMode);
   }
 
@@ -65,11 +61,8 @@ public class Machine {
   }
 
   public void assignTask(StageDag dag, int taskId, double taskDuration,
-      Resources taskResources) {
+      Resources taskResources, double currentTime) {
     int dagId = dag.dagId;
-    // TODO - change 0.0 in case of self editing state thing
-    currentTime = execMode ? Simulator.CURRENT_TIME : currentTime;
-
     // if task does not fit -> reject it
     boolean fit = getTotalResAvail().greaterOrEqual(taskResources);
     if (!fit) {
@@ -93,9 +86,7 @@ public class Machine {
   }
 
   // [dagId -> List<TaskId>]
-  public Map<Integer, List<Integer>> finishTasks(double... finishTime) {
-
-    currentTime = execMode ? Simulator.CURRENT_TIME : (Double) finishTime[0];
+  public Map<Integer, List<Integer>> finishTasks(double currentTime) {
 
     Map<Integer, List<Integer>> tasksFinished = new HashMap<Integer, List<Integer>>();
 
@@ -132,16 +123,16 @@ public class Machine {
   }
 
   // exponential dist
-  public double computeNextFailureTime(double rate) {
+  public double computeNextFailureTime(double currentTime, double rate) {
     double u = this.rand_.nextDouble();
-    return Utils.round(Math.log(1 - u) / (-rate) + Simulator.CURRENT_TIME, 2);
+    return Utils.round(Math.log(1 - u) / (-rate) + currentTime, 2);
   }
 
-  public boolean failureNow() {
-    if (nextFailureTime_< Simulator.CURRENT_TIME) {
-      nextFailureTime_ = this.computeNextFailureTime(this.failureRate_);
+  public boolean failureNow(double currentTime) {
+    if (nextFailureTime_< currentTime) {
+      nextFailureTime_ = this.computeNextFailureTime(currentTime, this.failureRate_);
       // nextFailureTime_ = Double.MAX_VALUE;
-      LOG.severe("Machine " + machineId + " fails at " + Simulator.CURRENT_TIME + "; next failure time: " + nextFailureTime_);
+      LOG.severe("Machine " + machineId + " fails at " + currentTime + "; next failure time: " + nextFailureTime_);
       return true;
     }
     return false;
@@ -156,7 +147,7 @@ public class Machine {
         BaseDag dag = Simulator.getDag(t.dagId);
         totalResAlloc.subtract(t.resDemands);
         dag.rsrcInUse.subtract(t.resDemands);
-        LOG.warning("Kill dag " + dagId + " task " + t.taskId + " at " + Utils.round(Simulator.CURRENT_TIME, 2) + "on machine " + machineId);
+        LOG.warning("Kill dag " + dagId + " task " + t.taskId + "on machine " + machineId);
         LOG.fine("Dag " + dag.dagId + " resource usage: " + dag.rsrcInUse + "; machine resource usage:" + totalResAlloc);
       }
     }

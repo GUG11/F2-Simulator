@@ -160,7 +160,7 @@ public class DataService {
 
   public void nodeFailure(int machineId) {
     // remove all (dag, stages) that have paritions on that machine
-    LOG.warning("Machine " + machineId + " fails. All data on that machine is lost. Current time:" + Simulator.CURRENT_TIME);
+    LOG.warning("Machine " + machineId + " fails. All data on that machine is lost.");
     for (Map.Entry<Integer, Map<String, StageOutput>> dagOutput: stageOutputPerJob_.entrySet()) {
       int dagId = dagOutput.getKey();
       Map<String, StageOutput> stageOutputs = dagOutput.getValue();

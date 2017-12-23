@@ -231,21 +231,21 @@ public class ExecuteService {
     return result;
   }
 
-  public void schedule() {
+  public void schedule(double currentTime) {
     LOG.info("running jobs: " + runningJobs_.size());
     for (BaseDag dag: runningJobs_) {
       LOG.info("schedule dag: " + dag.dagId);
-      intraJobScheduler_.schedule((StageDag) dag);
+      intraJobScheduler_.schedule((StageDag) dag, currentTime);
     }
   }
 
-  private void schedule(int dagId) {
+  private void schedule(int dagId, double currentTime) {
     BaseDag dag = getDagById(dagId);
     if(dag == null) {
       System.out.println("Error: Dag is not running any more when trying to schedule");
       return;
     }
-    intraJobScheduler_.schedule((StageDag) dag);
+    intraJobScheduler_.schedule((StageDag) dag, currentTime);
   }
 
   private StageDag getDagById(int dagId) {
@@ -259,16 +259,16 @@ public class ExecuteService {
     return (StageDag)dag;
   }
 
-  public boolean finishTasks(Queue<SpillEvent> spillEventQueue) {
+  public boolean finishTasks(Queue<SpillEvent> spillEventQueue, double currentTime) {
     boolean jobCompleted = false;
-    Map<Integer, List<Integer>> finishedTasks = cluster_.finishTasks();
+    Map<Integer, List<Integer>> finishedTasks = cluster_.finishTasks(currentTime);
     for (Map.Entry<Integer, List<Integer>> entry: finishedTasks.entrySet()) {
       int dagId = entry.getKey();
       List<Integer> finishedTasksPerDag = entry.getValue();
       LOG.info("dagId: " + dagId + ", finished tasks: " + finishedTasksPerDag);
       StageDag dag = getDagById(dagId);
       for (Integer taskId: finishedTasksPerDag) {
-        jobCompleted = emit(spillEventQueue, dagId, taskId) || jobCompleted;
+        jobCompleted = emit(spillEventQueue, dagId, taskId, currentTime) || jobCompleted;
         // move running tasks to finished tasks
         dag.runningTasks.remove(taskId);
         dag.finishedTasks.add(taskId);
@@ -278,7 +278,7 @@ public class ExecuteService {
   }
 
   // return whether the dag has finished
-  private boolean emit(Queue<SpillEvent> spillEventQueue, int dagId, int taskId) {
+  private boolean emit(Queue<SpillEvent> spillEventQueue, int dagId, int taskId, double currentTime) {
     Map<Integer, Double> data = taskOutputs_.get(taskId);
     taskOutputs_.remove(taskId);
     StageDag dag = getDagById(dagId);
@@ -293,14 +293,13 @@ public class ExecuteService {
     } else {
       dagStageNumTaskMap_.get(dagId).put(stageName, numRemaingTasks);
     }
-    double timestamp = Simulator.CURRENT_TIME;
     // get parent
     Set<String> parentStages = dag.stages.get(stageName).parents.keySet();
     String parent = "";
     if (!parentStages.isEmpty()) {
       parent = parentStages.iterator().next();  // assume linear graph
     }
-    SpillEvent spill = new SpillEvent(data, lastSpill, dagId, stageName, taskId, timestamp, parent);
+    SpillEvent spill = new SpillEvent(data, lastSpill, dagId, stageName, taskId, currentTime, parent);
     boolean endStage = dag.stages.get(stageName).children.isEmpty();
     if (!endStage) {
       LOG.info("new spill event: " + spill);
@@ -310,7 +309,7 @@ public class ExecuteService {
     if (jobCompleted) {
       LOG.info("Job completed. DagId = " + dagId + ". Remove it from availablePartitions_");
       availablePartitions_.remove(dagId);
-      dag.jobEndTime = timestamp;
+      dag.jobEndTime = currentTime;
       runningJobs_.remove(dag);
       completedJobs_.add(dag);
     }
@@ -330,7 +329,7 @@ public class ExecuteService {
   public Map<Integer, Set<String>> nodeFailure(int machineId) {
     // remove all (dag, stages) that have paritions on that machine
     Map<Integer, Set<String>> dagStagesAvail = new HashMap<>();
-    LOG.warning("Machine " + machineId + " fails. All data on that machine is lost. Current time:" + Simulator.CURRENT_TIME);
+    LOG.warning("Machine " + machineId + " fails. All data on that machine is lost.");
     for (Map.Entry<Integer, Map<String, Map<Integer, Map<Integer, Partition>>>> entry1: availablePartitions_.entrySet()) {
       int dagId = entry1.getKey();
       Map<String, Map<Integer, Map<Integer, Partition>>> stageMachinePart = entry1.getValue();
