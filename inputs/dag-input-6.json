@@ -1,6 +1,5 @@
 [
   {
-    "name": "0",
     "dagID": 0,
     "arrival_time": 0,
     "quota": 3000,
@@ -42,7 +41,6 @@
     ]
   },
   {
-    "name": "1",
     "dagID": 1,
     "arrival_time": 0.2,
     "quota": 3000,
@@ -76,7 +74,6 @@
     ]
   },
   {
-    "name": "2",
     "dagID": 2,
     "arrival_time": 0.8,
     "quota": 4000,
@@ -126,7 +123,6 @@
     ]
   },
   {
-    "name": "3",
     "dagID": 3,
     "arrival_time": 1.0,
     "quota": 3000,
@@ -168,7 +164,6 @@
     ]
   },
   {
-    "name": "4",
     "dagID": 4,
     "arrival_time": 1.4,
     "quota": 3000,
@@ -202,7 +197,6 @@
     ]
   },
   {
-    "name": "5",
     "dagID": 5,
     "arrival_time": 1.4,
     "quota": 4000,

@@ -24,7 +24,7 @@ public class CPSchedPolicy extends SchedPolicy {
   public void schedule(final StageDag dag, double currentTime) {
 
     // no tasks to be scheduled -> skip
-    LOG.fine("Dag: " + dag.dagId + " runnable tasks:" + dag.runnableTasks.size());
+    LOG.fine("Dag: " + dag.getDagId() + " runnable tasks:" + dag.runnableTasks.size());
     if (dag.runnableTasks.isEmpty())
       return;
 
@@ -36,13 +36,9 @@ public class CPSchedPolicy extends SchedPolicy {
     Collections.sort(rtCopy, new Comparator<Integer>() {
       @Override
       public int compare(Integer arg0, Integer arg1) {
-        Double val0 = dag.CPlength.get(dag.vertexToStage.get(arg0));
-        Double val1 = dag.CPlength.get(dag.vertexToStage.get(arg1));
-        if (val0 > val1)
-          return -1;
-        if (val0 < val1)
-          return 1;
-        return 0;
+        Double val0 = dag.getCPLength(arg0);
+        Double val1 = dag.getCPLength(arg1);
+        return Double.compare(val0, val1);
       }
     });
     Iterator<Integer> iter = rtCopy.iterator();
@@ -55,7 +51,7 @@ public class CPSchedPolicy extends SchedPolicy {
       boolean fit = dag.currResShareAvailable().greaterOrEqual(
           dag.rsrcDemands(taskId));
       if (!fit) {
-        LOG.finest("Task " + taskId + " does not fit quota " + dag.dagId + ". task resource demands: " + dag.rsrcDemands(taskId) + " dag resource available: " + dag.currResShareAvailable());
+        LOG.finest("Task " + taskId + " does not fit quota " + dag.getDagId() + ". task resource demands: " + dag.rsrcDemands(taskId) + " dag resource available: " + dag.currResShareAvailable());
         continue;
       }
 

@@ -37,8 +37,7 @@ public class DagParser {
 
   public StageDag parseDAG(JSONObject jDag) {
     double[] keySizes = ((JSONArray)jDag.get("key_sizes")).stream().mapToDouble(x -> Double.valueOf(x.toString()) ).toArray();
-    StageDag dag = new StageDag(jDag.get("name").toString(), 
-        Integer.parseInt(jDag.get("dagID").toString()), 
+    StageDag dag = new StageDag(Integer.parseInt(jDag.get("dagID").toString()), 
         Double.parseDouble(jDag.get("quota").toString()),
         keySizes,
         Double.parseDouble(jDag.get("arrival_time").toString()));
@@ -57,12 +56,6 @@ public class DagParser {
 
     // dag.scaleDag();
     dag.setCriticalPaths();
-    dag.setBFSOrder();
-    for (int taskId : dag.allTasks()) {
-      if (dag.getParents(taskId).isEmpty()) {
-        dag.runnableTasks.add(taskId);
-      }
-    }
     return dag;
   }
 

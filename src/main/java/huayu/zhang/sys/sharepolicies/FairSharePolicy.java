@@ -31,7 +31,7 @@ public class FairSharePolicy extends SharePolicy {
     // update the resourceShareAllocated for every running job
     for (BaseDag job : Simulator.runningJobs) {
       job.rsrcQuota = quotaRsrcShare;
-      LOG.fine("Allocated to job:" + job.dagId + " share:"
+      LOG.fine("Allocated to job:" + job.getDagId() + " share:"
         + job.rsrcQuota);
     }
   }

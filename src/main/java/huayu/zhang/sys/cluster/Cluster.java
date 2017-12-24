@@ -31,12 +31,12 @@ public class Cluster {
 
   public boolean assignTask(int machineId, StageDag dag, int taskId,
       double taskDuration, Resources taskResources, double currentTime) {
-    LOG.fine("assign task: "+taskId+" from dag:"+dag.dagId+" on machine:"+machineId);
+    LOG.fine("assign task: "+taskId+" from dag:"+ dag.getDagId() +" on machine:"+machineId);
     Machine machine = machines.get(machineId);
     assert (machine != null);
     boolean fit = machine.getTotalResAvail().greaterOrEqual(taskResources);
     if (!fit) {
-      LOG.warning("ERROR: dag " + dag.dagId + ", stage:" + dag.vertexToStage.get(taskId) +  ", task: " + taskId +  " should fit");
+      LOG.warning("ERROR: dag " + dag.getDagId() + ", stage:" + dag.vertexToStage.get(taskId) +  ", task: " + taskId +  " should fit");
       return false;
     }
     machine.assignTask(dag, taskId, taskDuration, taskResources, currentTime);

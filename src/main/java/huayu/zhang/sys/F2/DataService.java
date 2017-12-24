@@ -32,10 +32,10 @@ public class DataService {
 
   public void removeCompletedJobs(Queue<BaseDag> completedJobs) {
     for (BaseDag dag: completedJobs) {
-      if (usagePerJob_.containsKey(dag.dagId)) {
-        LOG.fine("Remove completed dag " + dag.dagId + " data from DS");
-        usagePerJob_.remove(dag.dagId);
-        stageOutputPerJob_.remove(dag.dagId);
+      if (usagePerJob_.containsKey(dag.getDagId())) {
+        LOG.fine("Remove completed dag " + dag.getDagId() + " data from DS");
+        usagePerJob_.remove(dag.getDagId());
+        stageOutputPerJob_.remove(dag.getDagId());
       }
     }
   }

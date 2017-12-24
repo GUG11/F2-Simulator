@@ -234,7 +234,7 @@ public class ExecuteService {
   public void schedule(double currentTime) {
     LOG.info("running jobs: " + runningJobs_.size());
     for (BaseDag dag: runningJobs_) {
-      LOG.info("schedule dag: " + dag.dagId);
+      LOG.info("schedule dag: " + dag.getDagId());
       intraJobScheduler_.schedule((StageDag) dag, currentTime);
     }
   }

@@ -137,7 +137,7 @@ public class Simulator {
           double dagDuration = (dag.jobEndTime - dag.jobStartTime);
           makespan = Math.max(makespan, dagDuration);
           average += dagDuration;
-          results.put(dag.dagId, (dag.jobEndTime - dag.jobStartTime));
+          results.put(dag.getDagId(), (dag.jobEndTime - dag.jobStartTime));
         }
         average /= completedJobs.size();
         System.out.println("---------------------");
@@ -185,10 +185,10 @@ public class Simulator {
 
     Set<BaseDag> newlyStartedJobs = new HashSet<BaseDag>();
     for (BaseDag dag : runnableJobs) {
-      if (dag.timeArrival <= currentTime_) {
+      if (dag.getTimeArrival() <= currentTime_) {
         dag.jobStartTime = currentTime_;
         newlyStartedJobs.add(dag);
-        System.out.println("Started job:" + dag.dagId + " at time:"
+        System.out.println("Started job:" + dag.getDagId() + " at time:"
             + currentTime_);
       }
     }
@@ -210,7 +210,7 @@ public class Simulator {
 
   public static StageDag getDag(int dagId) {
     for (BaseDag dag : Simulator.runningJobs) {
-      if (dag.dagId == dagId) {
+      if (dag.getDagId() == dagId) {
         return (StageDag) dag;
       }
     }

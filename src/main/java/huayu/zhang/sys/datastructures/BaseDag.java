@@ -6,28 +6,13 @@ import java.util.*;
 
 public abstract class BaseDag {
 
-  public int dagId;
-  public double timeArrival;
+  protected int dagId;
+  private double timeArrival_;
 
-  public Map<Integer, Double> /*CPlength,*/ BFSOrder;
-  public Map<String, Double> CPlength;
-
-  public abstract void setCriticalPaths();
   public abstract double totalWorkJob();
-  public abstract double getMaxCP();
-  public abstract Map<Integer, Double> area();
-  
-  public abstract double longestCriticalPath(String stageName);
-
-  public abstract void setBFSOrder();
-
   public abstract Resources rsrcDemands(int task_id);
 
   public abstract double duration(int task_id);
-
-  public abstract List<Interval> getChildren(int task_id);
-
-  public abstract List<Interval> getParents(int task_id);
 
   public abstract Set<Integer> allTasks();
 
@@ -48,9 +33,9 @@ public abstract class BaseDag {
 
   public Map<Integer, Task> idToTask;
 
-  public BaseDag(int id, double... arrival) {
+  public BaseDag(int id, double arrival) {
     this.dagId = id;
-    this.timeArrival = (arrival.length > 0) ? arrival[0] : 0;
+    this.timeArrival_ = arrival;
 
     rsrcQuota = new Resources();
     rsrcInUse = new Resources();
@@ -71,18 +56,10 @@ public abstract class BaseDag {
     return usedRes;
   }
 
-  public int getDagId() {
-    return this.dagId;
-  }
+  public int getDagId() { return this.dagId; }
+  public double getTimeArrival() { return timeArrival_; }
 
-  public void printCPLength() {
-    System.out.println("DagID:" + dagId + " critical path lengths");
-    for (Map.Entry<String, Double> entry : CPlength.entrySet()) {
-      System.out.println("task ID:" + entry.getKey() + ", cp length:" + entry.getValue());
-    }
-  }
-
-  public void printLaunchedTasks() {
+    public void printLaunchedTasks() {
     System.out.print("DagID:" + dagId + " launched tasks now:");
     launchedTasksNow.stream().forEach(taskID -> System.out.print(taskID + ","));
     System.out.println("");

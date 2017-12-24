@@ -43,13 +43,13 @@ public class DRFSharePolicy extends SharePolicy {
     Map<Integer, Resources> resDemandsDags = new HashMap<>();
     Map<Integer, Resources> resGivenToDags = new HashMap<>();
     for (BaseDag job : Simulator.runningJobs) {
-      resGivenToDags.put(job.dagId, new Resources());
-      dominantShares.put(job.dagId, 0.0);
+      resGivenToDags.put(job.getDagId(), new Resources());
+      dominantShares.put(job.getDagId(), 0.0);
       Resources avgResDemandDag = ((StageDag) job).totalResourceDemand();
       avgResDemandDag.divide(((StageDag) job).numTotalTasks());
       // Resources avgResDemandDag = ((StageDag) job).currentResouceDemand();
-      resDemandsDags.put(job.dagId, avgResDemandDag); 
-      LOG.fine("Dag " + job.dagId + " resouce demands: " + resDemandsDags.get(job.dagId));
+      resDemandsDags.put(job.getDagId(), avgResDemandDag); 
+      LOG.fine("Dag " + job.getDagId() + " resouce demands: " + resDemandsDags.get(job.getDagId()));
     }
 
     boolean stop = false;
@@ -117,8 +117,8 @@ public class DRFSharePolicy extends SharePolicy {
       // + job.rsrcQuota);
     } */
     for (BaseDag job : Simulator.runningJobs) {
-      job.rsrcQuota = resGivenToDags.get(job.dagId);
-      LOG.fine("Allocated to job:" + job.dagId + " share:"
+      job.rsrcQuota = resGivenToDags.get(job.getDagId());
+      LOG.fine("Allocated to job:" + job.getDagId() + " share:"
         + job.rsrcQuota);
     }
   }

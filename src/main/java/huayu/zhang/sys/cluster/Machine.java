@@ -62,7 +62,7 @@ public class Machine {
 
   public void assignTask(StageDag dag, int taskId, double taskDuration,
       Resources taskResources, double currentTime) {
-    int dagId = dag.dagId;
+    int dagId = dag.getDagId();
     // if task does not fit -> reject it
     boolean fit = getTotalResAvail().greaterOrEqual(taskResources);
     if (!fit) {
@@ -101,8 +101,8 @@ public class Machine {
         // update resource freed from corresponding job
         BaseDag dag = Simulator.getDag(t.dagId);
         dag.rsrcInUse.subtract(t.resDemands);
-        LOG.info("Dag " + dag.dagId + ", stage " + ((StageDag)dag).vertexToStage.get(t.taskId) + ",Task " + t.taskId + " on machine " + machineId + " finished");
-        LOG.fine("Dag " + dag.dagId + " resource usage: " + dag.rsrcInUse + "; machine resource usage:" + totalResAlloc);
+        LOG.info("Dag " + dag.getDagId() + ", stage " + ((StageDag)dag).vertexToStage.get(t.taskId) + ",Task " + t.taskId + " on machine " + machineId + " finished");
+        LOG.fine("Dag " + dag.getDagId() + " resource usage: " + dag.rsrcInUse + "; machine resource usage:" + totalResAlloc);
 
         if (tasksFinished.get(t.dagId) == null) {
           tasksFinished.put(t.dagId, new ArrayList<Integer>());
@@ -148,7 +148,7 @@ public class Machine {
         totalResAlloc.subtract(t.resDemands);
         dag.rsrcInUse.subtract(t.resDemands);
         LOG.warning("Kill dag " + dagId + " task " + t.taskId + "on machine " + machineId);
-        LOG.fine("Dag " + dag.dagId + " resource usage: " + dag.rsrcInUse + "; machine resource usage:" + totalResAlloc);
+        LOG.fine("Dag " + dagId + " resource usage: " + dag.rsrcInUse + "; machine resource usage:" + totalResAlloc);
       }
     }
     runningTasks.keySet().removeAll(tasksToKill);
