@@ -3,7 +3,6 @@ package huayu.zhang.sys.datastructures;
 import java.util.logging.Logger;
 
 import huayu.zhang.sys.cluster.Cluster;
-import huayu.zhang.sys.F2.StageOutput;
 import huayu.zhang.sys.simulator.Main.Globals;
 import huayu.zhang.sys.simulator.Simulator;
 import huayu.zhang.sys.utils.Interval;

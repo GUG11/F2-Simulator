@@ -15,14 +15,14 @@ public class StageOutput {
 
   private static Logger LOG = Logger.getLogger(StageOutput.class.getName());
 
-  public StageOutput(double[] usage, double quota, int numGlobalPart, List<Integer> blackList) {
+  public StageOutput(int dagId, String stageName, double[] usage, double quota, int numGlobalPart, List<Integer> blackList) {
     setNumMachines(usage, quota);
     assignMachines(usage, blackList);
     numGlobalPart_ = numGlobalPart;
     numTotalPartitions_ = numGlobalPart * numMachines_;
     partitions_ = new Partition[numTotalPartitions_];
     for (int i = 0; i < numTotalPartitions_; i++) {
-      partitions_[i] = new Partition();
+      partitions_[i] = new Partition(dagId, stageName, i);
     }
     partitionToMachine_ = new HashMap<>();
     readyPartitionSet_ = new HashSet<>();

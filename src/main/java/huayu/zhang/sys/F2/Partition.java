@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Partition {
-  public Map<Integer, Map<Integer, Double>> machineKeySize_;    // <machineId, (key, size)>
+  private int dagId_;
+  private String stageName_;
+  private int partId_;
+  private Map<Integer, Map<Integer, Double>> machineKeySize_;    // <machineId, (key, size)>
   private double totalSize_;
   private double increaseRate_;
   private boolean complete_;
@@ -15,7 +18,10 @@ public class Partition {
   private static double TIMETOL=0.001;
   private int activeMachineId_;
   private List<Integer> machinesInvolved_;
-  public Partition() {
+  public Partition(int dagId, String stageName, int partId) {
+    dagId_ = dagId;
+    stageName_ = stageName;
+    partId_ = partId;
     machineKeySize_ = new HashMap<Integer, Map<Integer, Double>>();
     totalSize_ = 0;
     complete_ = false;
@@ -25,6 +31,10 @@ public class Partition {
     activeMachineId_ = -1;
     machinesInvolved_ = new ArrayList<>();
   }
+
+  public int getDagId() { return dagId_; }
+  public int getPartId() { return partId_; }
+  public String getStageName() { return stageName_; }
 
   public void materialize(Integer key, double size, int machineId, boolean lastData, double time) {
     activeMachineId_ = machineId;
@@ -66,6 +76,7 @@ public class Partition {
     return machineId == activeMachineId_ ? increaseRate_ : 0.0;
   }
   public Map<Integer, Map<Integer, Double>> getData() { return machineKeySize_; }
+
   public double getPartitionSizeOnMachine(int machineId) {
     if (machineKeySize_.containsKey(machineId)) {
       return machineKeySize_.get(machineId).values().stream().mapToDouble(v -> v).sum();
@@ -94,7 +105,19 @@ public class Partition {
 
   @Override
   public String toString() {
-    return machineKeySize_.toString();
+    return String.format("(Dag:%d, Stage:%s, Partition:%d): %s",
+        this.dagId_, this.stageName_, this.partId_, machineKeySize_.toString());
+  }
+
+  @Override
+  public int hashCode() { return partId_; }
+
+  @Override
+  public boolean equals(Object obj) {
+    Partition pObj = (Partition)obj;
+    return this.dagId_ == pObj.getDagId() && 
+      this.stageName_ == pObj.getStageName() &&
+      this.partId_ == pObj.getPartId();
   }
 
   public boolean isOnMachine(int machineId) {

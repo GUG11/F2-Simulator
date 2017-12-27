@@ -27,7 +27,7 @@ public class ExecuteService {
 
   private Map<Integer, Map<Integer, Double>> taskOutputs_;  // (taskId, (key, size))
   private Map<Integer, Map<String, Integer>> dagStageNumTaskMap_;    // (dagId, stageName, num of tasks)
-  private Map<Integer, Map<String, Map<Integer, Map<Integer, Partition>>>> availablePartitions_; // (dagId, stageName, machineId, paritionId, partition)
+  private Map<Integer, Map<String, Map<Integer, Set<Partition>>>> availablePartitions_; // (dagId, stageName, machineId, partitions)
   private Map<Integer, Set<String>> dagRunnableStagesMap_;
 
   // stats
@@ -50,39 +50,39 @@ public class ExecuteService {
     numFailureEvents_ = 0;
   }
 
-  private void addPartition(int dagId, String stageName, int machineId, int pid, Partition partition) {
-    Map<String, Map<Integer, Map<Integer, Partition>>> smpp = null;
-    Map<Integer, Map<Integer, Partition>> mpp = null;
-    Map<Integer, Partition> pp = null;
+  private void addPartition(int dagId, String stageName, int machineId, Partition partition) {
+    Map<String, Map<Integer, Set<Partition>>> smp = null;
+    Map<Integer, Set<Partition>> mp = null;
+    Set<Partition> pSet = null;
     if (!availablePartitions_.containsKey(dagId)) {
       availablePartitions_.put(dagId, new HashMap<>());
     }
-    smpp = availablePartitions_.get(dagId);
-    if (!smpp.containsKey(stageName)) {
-      smpp.put(stageName, new HashMap<>());
+    smp = availablePartitions_.get(dagId);
+    if (!smp.containsKey(stageName)) {
+      smp.put(stageName, new HashMap<>());
     }
-    mpp = smpp.get(stageName);
-    if (!mpp.containsKey(machineId)) {
-      mpp.put(machineId, new HashMap<>());
+    mp = smp.get(stageName);
+    if (!mp.containsKey(machineId)) {
+      mp.put(machineId, new HashSet<>());
     }
-    pp = mpp.get(machineId);
-    pp.put(pid, partition);
+    pSet = mp.get(machineId);
+    pSet.add(partition);
   }
 
   private void removePartitions(int dagId, String stageName) {
-    Map<String, Map<Integer, Map<Integer, Partition>>> smpp = availablePartitions_.get(dagId);
-    if (smpp != null) {
-      smpp.remove(stageName);
+    Map<String, Map<Integer, Set<Partition>>> smp = availablePartitions_.get(dagId);
+    if (smp != null) {
+      smp.remove(stageName);
     }
   }
 
   public void printAvailablePartition(int dagId, String stageName) {
-    Map<Integer, Map<Integer, Partition>> macPart = availablePartitions_.get(dagId).get(stageName);
-    for (Map.Entry<Integer, Map<Integer, Partition>> mpEntry : macPart.entrySet()) {
+    Map<Integer, Set<Partition>> macPart = availablePartitions_.get(dagId).get(stageName);
+    for (Map.Entry<Integer, Set<Partition>> mpEntry : macPart.entrySet()) {
       int machineId = mpEntry.getKey();
-      Map<Integer, Partition> partMap = mpEntry.getValue();
+      Set<Partition> partSet = mpEntry.getValue();
       System.out.print(String.format("Available partitions for dag %d, stage %s on machine %d, ", dagId, stageName, machineId)); 
-      System.out.println(partMap.keySet().size() + " paritions: " + partMap.keySet());
+      System.out.println(partSet.size() + " paritions: " + partSet);
     }
   }
 
@@ -153,12 +153,12 @@ public class ExecuteService {
           String parent = parents.iterator().next();
           System.out.println("dagId=" + dagId + ", stageName=" + stageName + ", parent(s)=" + parent);
           printAvailablePartition(dagId, parent);
-          Map<Integer, Map<Integer, Partition>> machinePartMap = availablePartitions_.get(dagId).get(parent);
-          for (Map.Entry<Integer, Map<Integer, Partition>> mchPart: machinePartMap.entrySet()) {
+          Map<Integer, Set<Partition>> machinePartMap = availablePartitions_.get(dagId).get(parent);
+          for (Map.Entry<Integer, Set<Partition>> mchPart: machinePartMap.entrySet()) {
             int machineId = mchPart.getKey();
-            Map<Integer, Partition> partMap = mchPart.getValue();
+            Set<Partition> partSet = mchPart.getValue();
             int count = 0;
-            for (Map.Entry<Integer, Partition> partkv: partMap.entrySet()) {
+            for (Partition pt: partSet) {
               if (count % maxPartitionsPerTask_ == 0) {
                 taskId = nextId_;
                 nextId_++;
@@ -171,7 +171,7 @@ public class ExecuteService {
                 dag.addRunnableTask(taskId, stageName, machineId);
               }
               count++;
-              Partition pt = partkv.getValue();
+              // TODO: move aggregate here. Also we should consider all the partitions in a task instead of one by one
               Map<Integer, Map<Integer, Double>> data = pt.getData();   // machine, key, size
               assert data.size() == 1 && data.containsKey(machineId);  // already aggregated
               Map<Integer, Double> ksMap = data.get(machineId);
@@ -214,7 +214,7 @@ public class ExecuteService {
       partition.aggregateKeyShareToSingleMachine(id, machines);
     }
     if (-1 < id) {
-      this.addPartition(dagId, stageName, id, readyEvent.getPartitionId(), partition);
+      this.addPartition(dagId, stageName, id, partition);
     } else {
       LOG.severe("Empty readyEvent: " + readyEvent);
     }
@@ -330,11 +330,11 @@ public class ExecuteService {
     // remove all (dag, stages) that have paritions on that machine
     Map<Integer, Set<String>> dagStagesAvail = new HashMap<>();
     LOG.warning("Machine " + machineId + " fails. All data on that machine is lost.");
-    for (Map.Entry<Integer, Map<String, Map<Integer, Map<Integer, Partition>>>> entry1: availablePartitions_.entrySet()) {
+    for (Map.Entry<Integer, Map<String, Map<Integer, Set<Partition>>>> entry1: availablePartitions_.entrySet()) {
       int dagId = entry1.getKey();
-      Map<String, Map<Integer, Map<Integer, Partition>>> stageMachinePart = entry1.getValue();
+      Map<String, Map<Integer, Set<Partition>>> stageMachinePart = entry1.getValue();
       List<String> stageNames = new LinkedList<String>();
-      for (Map.Entry<String, Map<Integer, Map<Integer, Partition>>> entry2 : stageMachinePart.entrySet()) {
+      for (Map.Entry<String, Map<Integer, Set<Partition>>> entry2 : stageMachinePart.entrySet()) {
         String stageName = entry2.getKey();
         if (entry2.getValue().containsKey(machineId)) {
           LOG.info("Dag " + dagId + ", stage " + stageName + " has partitions on machine" + machineId);

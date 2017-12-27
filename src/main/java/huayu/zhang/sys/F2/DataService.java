@@ -76,7 +76,7 @@ public class DataService {
         }
         LOG.info("Use CPS policy. Blacklist: " + blackList);
       }
-      dagIntermediateData.put(stageName, new StageOutput(usagePerJob_.get(dagId), quota_[dagId], numGlobalPart_, blackList));
+      dagIntermediateData.put(stageName, new StageOutput(dagId, stageName, usagePerJob_.get(dagId), quota_[dagId], numGlobalPart_, blackList));
     }
     //machineId -> usage on that machine
     Map<Integer, Double> newUsage = dagIntermediateData.get(stageName).materialize(event.getData(), event.getTimestamp());
