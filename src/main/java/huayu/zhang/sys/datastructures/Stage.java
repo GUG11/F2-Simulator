@@ -8,79 +8,62 @@ import java.util.Map;
 import java.util.Set;
 
 public class Stage {
-  public String name;
+  private String name_;
 
   private Set<Integer> taskIds_;
 
   private int numTasks_;    // maximum number of tasks that can be parallelized
   private double outinRatio_;
-  public double vDuration;
-  public Resources vDemands;
+  private double duration_;
+  private Resources demands_;
 
-  public Map<String, Dependency> parents, children;  // <stageName, dependency>
+  private Set<String> parents_, children_;
 
   public Stage(String name, int numTasks, double duration,
       double[] resources, double outinRatio) {
-    this.name = name;
+    this.name_ = name;
     numTasks_ = numTasks;
     outinRatio_ = outinRatio;
 
-    parents = new HashMap<String, Dependency>();
-    children = new HashMap<String, Dependency>();
+    parents_ = new HashSet<>();
+    children_ = new HashSet<>();
+
     taskIds_ = new HashSet<>();
 
-    vDuration = duration;
-    vDemands = new Resources(resources);
+    duration_ = duration;
+    demands_ = new Resources(resources);
 
-    // System.out.println("New Stage" + this.name + "," + this.id + "," + this.vids + ", Duration:" + vDuration + ",Demands" + vDemands); 
+    // System.out.println("New Stage" + this.name + "," + this.id + "," + this.vids + ", Duration:" + duration_ + ",Demands" + demands_); 
   }
 
-  public Resources rsrcDemandsPerTask() { return vDemands; }
+  public Resources rsrcDemandsPerTask() { return demands_; }
 
   public void addTaskId(int tid) {
     taskIds_.add(tid);
   }
 
   public int getNumTasks() { return numTasks_; }
+  public String getName() { return name_; }
+  public double getDuration() { return duration_; }
+  public Resources getDemands() { return demands_; }
+
+  public boolean addParentStage(String name) { return parents_.add(name); }
+  public boolean addChildStage(String name) { return children_.add(name); }
+
+  public boolean isParentOf(String name) { return children_.contains(name); }
+  public boolean isChildOf(String name) { return parents_.contains(name); }
+
+  public Set<String> getParentStages() { return parents_; }
+  public Set<String> getChildStages() { return children_; }
+
+  public boolean isRoot() { return parents_.isEmpty(); }
+  public boolean isLeaf() { return children_.isEmpty(); }
 
   public double getOutinRatio() { return outinRatio_; }
 
   public Resources totalWork() {
-    Resources totalWork = Resources.clone(vDemands);
+    Resources totalWork = Resources.clone(demands_);
     totalWork.multiply(numTasks_);
     return totalWork;
   }
-
-  public Resources totalWorkInclDur() {
-    Resources totalWork = Resources.clone(vDemands);
-    totalWork.multiply(numTasks_ * vDuration);
-    return totalWork;
-  }
-
-  public double stageContribToSrtfScore(Set<Integer> consideredTasks) {
-    Set<Integer> stageTasks = new HashSet<Integer>();
-    for (Integer task: taskIds_) {
-      stageTasks.add(task);
-    }
-    stageTasks.removeAll(consideredTasks);
-
-    int remTasksToSched = stageTasks.size();
-    if (remTasksToSched == 0) {
-      return 0;
-    }
-    double l2Norm = Resources.l2Norm(vDemands);
-    return l2Norm * remTasksToSched * vDuration;
-  }
-
-  // RG: not optimal at all
-  // for every stage, pass the entire list of running/finished tasks
-  public double remTasks(Set<Integer> consideredTasks) {
-    Set<Integer> stageTasks = new HashSet<Integer>();
-    for (Integer task: taskIds_) {
-      stageTasks.add(task);
-    }
-    stageTasks.removeAll(consideredTasks);
-    return stageTasks.size();
-  }
-  // end task level convenience
 }

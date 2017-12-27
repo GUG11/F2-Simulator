@@ -35,9 +35,9 @@
       }
     ],
     "dependencies": [
-      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
-      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"},
-      {"src": "Stage_2", "dst": "Stage_3", "pattern": "o2o"}
+      {"src": "Stage_0", "dst": "Stage_1"},
+      {"src": "Stage_1", "dst": "Stage_2"},
+      {"src": "Stage_2", "dst": "Stage_3"}
     ]
   },
   {
@@ -69,8 +69,8 @@
       }
     ],
     "dependencies": [
-      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
-      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"}
+      {"src": "Stage_0", "dst": "Stage_1"},
+      {"src": "Stage_1", "dst": "Stage_2"}
     ]
   },
   {
@@ -116,10 +116,10 @@
       }
     ],
     "dependencies": [
-      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
-      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"},
-      {"src": "Stage_2", "dst": "Stage_3", "pattern": "o2o"},
-      {"src": "Stage_3", "dst": "Stage_4", "pattern": "o2o"}
+      {"src": "Stage_0", "dst": "Stage_1"},
+      {"src": "Stage_1", "dst": "Stage_2"},
+      {"src": "Stage_2", "dst": "Stage_3"},
+      {"src": "Stage_3", "dst": "Stage_4"}
     ]
   },
   {
@@ -158,9 +158,9 @@
       }
     ],
     "dependencies": [
-      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
-      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"},
-      {"src": "Stage_2", "dst": "Stage_3", "pattern": "o2o"}
+      {"src": "Stage_0", "dst": "Stage_1"},
+      {"src": "Stage_1", "dst": "Stage_2"},
+      {"src": "Stage_2", "dst": "Stage_3"}
     ]
   },
   {
@@ -192,8 +192,8 @@
       }
     ],
     "dependencies": [
-      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
-      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"}
+      {"src": "Stage_0", "dst": "Stage_1"},
+      {"src": "Stage_1", "dst": "Stage_2"}
     ]
   },
   {
@@ -239,10 +239,10 @@
       }
     ],
     "dependencies": [
-      {"src": "Stage_0", "dst": "Stage_1", "pattern": "ata"},
-      {"src": "Stage_1", "dst": "Stage_2", "pattern": "o2o"},
-      {"src": "Stage_2", "dst": "Stage_3", "pattern": "o2o"},
-      {"src": "Stage_3", "dst": "Stage_4", "pattern": "o2o"}
+      {"src": "Stage_0", "dst": "Stage_1"},
+      {"src": "Stage_1", "dst": "Stage_2"},
+      {"src": "Stage_2", "dst": "Stage_3"},
+      {"src": "Stage_3", "dst": "Stage_4"}
     ]
   }
 

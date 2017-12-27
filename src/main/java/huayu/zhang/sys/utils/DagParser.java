@@ -45,16 +45,13 @@ public class DagParser {
     JSONArray jStages = (JSONArray)jDag.get("stages");
     for (int i = 0; i < jStages.size(); i++) {
       JSONObject jStage = (JSONObject)jStages.get(i);
-      dag.stages.put(jStage.get("name").toString(), parseStage(jStage));
+      dag.addStage(jStage.get("name").toString(), parseStage(jStage));
     }
     JSONArray jDeps = (JSONArray)jDag.get("dependencies");
     for (Object jDep: jDeps) {
       parseDependency((JSONObject)jDep, dag);
     }
 
-    dag.vertexToStage = new HashMap<Integer, String>();
-
-    // dag.scaleDag();
     dag.setCriticalPaths();
     return dag;
   }
@@ -71,7 +68,7 @@ public class DagParser {
 
   public void parseDependency(JSONObject jDep, StageDag dag) {
     dag.populateParentsAndChildrenStructure(jDep.get("src").toString(),
-        jDep.get("dst").toString(), jDep.get("pattern").toString());
+        jDep.get("dst").toString());
   }
 
   public double[] parseInputData(String filePath) {

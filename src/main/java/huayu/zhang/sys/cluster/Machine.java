@@ -78,7 +78,7 @@ public class Machine {
     Task t = new Task(dagId, taskId, taskDuration, taskResources);
     runningTasks.put(t, expTaskComplTime);
 
-    LOG.info("Assign dag " + dagId + "stage " + dag.vertexToStage.get(taskId) + " task " + taskId + " to machine " + machineId + " expected to finish at: " + expTaskComplTime);
+    LOG.info("Assign dag " + dagId + "stage " + dag.findStageByTaskID(taskId) + " task " + taskId + " to machine " + machineId + " expected to finish at: " + expTaskComplTime);
     // update resource allocated to the corresponding job
     // BaseDag dag = Simulator.getDag(dagId);
     dag.rsrcInUse.sum(dag.rsrcDemands(taskId));
@@ -101,7 +101,7 @@ public class Machine {
         // update resource freed from corresponding job
         BaseDag dag = Simulator.getDag(t.dagId);
         dag.rsrcInUse.subtract(t.resDemands);
-        LOG.info("Dag " + dag.getDagId() + ", stage " + ((StageDag)dag).vertexToStage.get(t.taskId) + ",Task " + t.taskId + " on machine " + machineId + " finished");
+        LOG.info("Dag " + dag.getDagId() + ", stage " + ((StageDag)dag).findStageByTaskID(t.taskId) + ",Task " + t.taskId + " on machine " + machineId + " finished");
         LOG.fine("Dag " + dag.getDagId() + " resource usage: " + dag.rsrcInUse + "; machine resource usage:" + totalResAlloc);
 
         if (tasksFinished.get(t.dagId) == null) {

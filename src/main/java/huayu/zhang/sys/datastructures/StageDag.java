@@ -3,6 +3,7 @@ package huayu.zhang.sys.datastructures;
 import java.util.logging.Logger;
 
 import huayu.zhang.sys.cluster.Cluster;
+import huayu.zhang.sys.F2.StageOutput;
 import huayu.zhang.sys.simulator.Main.Globals;
 import huayu.zhang.sys.simulator.Simulator;
 import huayu.zhang.sys.utils.Interval;
@@ -19,9 +20,9 @@ public class StageDag extends BaseDag {
   private double quota_;
   private double[] inputKeySizes_;
 
-  public Map<String, Stage> stages;
-  public Map<Integer, String> vertexToStage;  // <vertexId (taskID), stageName vertexId in>
-  public Map<String, Double> stageCPLength;
+  private Map<String, Stage> stages_;
+  private Map<Integer, String> taskToStageMap_;  // <vertexId (taskID), stageName vertexId in>
+  private Map<String, Double> stageCPLength_;
 
   private Set<String> runnableStages_;
   private Set<String> runningStages_;
@@ -32,11 +33,12 @@ public class StageDag extends BaseDag {
 
   private Map<Integer, Integer> taskToMachine_; // assign certain task to machine. set -1 if no preference
 
-  public Map<Integer, Task> adjustedTaskDemands = null;
+  // related to Data Service
+  
 
   public StageDag(int id, double quota, double[] inputKeySizes, double arrival) {
     super(id, arrival);
-    stages = new HashMap<String, Stage>();
+    stages_ = new HashMap<String, Stage>();
     quota_ = quota;
     runnableStages_ = new HashSet<>();
     runningStages_ = new HashSet<>();
@@ -45,6 +47,7 @@ public class StageDag extends BaseDag {
     killedTasks_ = new LinkedList<>();
     inputKeySizes_ = inputKeySizes;
     taskToMachine_ = new HashMap<>();
+    taskToStageMap_ = new HashMap<>();
   }
 
   public double getQuota() {return quota_; }
@@ -56,7 +59,11 @@ public class StageDag extends BaseDag {
   public boolean isFinishedStage(String name) { return finishedStages_.contains(name); }
 
   public boolean isRoot(String name) {
-    return stages.containsKey(name) && stages.get(name).parents.isEmpty();
+    return stages_.containsKey(name) && stages_.get(name).isRoot();
+  }
+
+  public boolean isLeaf(String name) {
+    return stages_.containsKey(name) && stages_.get(name).isLeaf();
   }
 
   public String onDataLoss(Set<String> availableStages, Set<Integer> taskToKill) {
@@ -71,11 +78,11 @@ public class StageDag extends BaseDag {
       }
       LOG.info("Dag " + dagId + ": Current running/runable stage: " + activeStage);
       if (activeStage != null && !isRoot(activeStage)) {
-        String parentStage = stages.get(activeStage).parents.keySet().iterator().next();
+        String parentStage = stages_.get(activeStage).getParentStages().iterator().next();
         if (!availableStages.contains(parentStage)) {
           LOG.info("Dag " + dagId + ": Current running/runable's parent stage: " + parentStage + " is unavailable");
           // find tasks
-          for (Map.Entry<Integer, String> taskStage: vertexToStage.entrySet()) {
+          for (Map.Entry<Integer, String> taskStage: taskToStageMap_.entrySet()) {
             int taskId = taskStage.getKey();
             String stageName = taskStage.getValue();
             if (activeStage.equals(stageName)) {
@@ -101,7 +108,7 @@ public class StageDag extends BaseDag {
           while (!availableStages.contains(parentStage)) {
             activeStage = parentStage;
             finishedStages_.remove(activeStage);
-            Set<String> parentSet = stages.get(activeStage).parents.keySet();
+            Set<String> parentSet = stages_.get(activeStage).getParentStages();
             if (parentSet.isEmpty()) break;
             parentStage = parentSet.iterator().next();
           }
@@ -131,7 +138,7 @@ public class StageDag extends BaseDag {
   }
 
   public void addRunnableStage(String name) {
-    if (stages.containsKey(name)) {
+    if (stages_.containsKey(name)) {
       runnableStages_.add(name);
     } else {
       LOG.severe(name + " is not a valid stage in the current job (" + dagId + ")");
@@ -158,12 +165,12 @@ public class StageDag extends BaseDag {
 
   public Set<String> updateRunnableStages() {
     Set<String> newRunnableSet = new HashSet<>();
-    for (Map.Entry<String, Stage> entry: stages.entrySet()) {
+    for (Map.Entry<String, Stage> entry: stages_.entrySet()) {
       String name = entry.getKey();
       if (runnableStages_.contains(name) ||
           runningStages_.contains(name) ||
           finishedStages_.contains(name)) continue;
-      if (finishedStages_.containsAll(entry.getValue().parents.keySet())) {
+      if (finishedStages_.containsAll(entry.getValue().getParentStages())) {
         runnableStages_.add(name);
         newRunnableSet.add(name);
       }
@@ -174,12 +181,12 @@ public class StageDag extends BaseDag {
   public Set<String> setInitiallyRunnableStages() {
     LOG.info("set initially runnable stages for dag " + dagId);
     Set<String> newRunnableSet = new HashSet<>();
-    for (Map.Entry<String, Stage> entry: stages.entrySet()) {
+    for (Map.Entry<String, Stage> entry: stages_.entrySet()) {
       String name = entry.getKey();
       if (!runnableStages_.contains(name) &&
           !runningStages_.contains(name) &&
           !finishedStages_.contains(name) &&
-          entry.getValue().parents.isEmpty()) {
+          entry.getValue().getParentStages().isEmpty()) {
         newRunnableSet.add(name);
         runnableStages_.add(name);
       }
@@ -191,45 +198,42 @@ public class StageDag extends BaseDag {
   public void viewDag() {
     System.out.println("\n == DAG: " + this.dagId + " ==");
 
-    for (Stage stage : stages.values()) {
-      System.out.print("Stage: " + stage.name + ", duration:" + stage.vDuration + ", ");
-      System.out.println(stage.vDemands);
+    for (Stage stage : stages_.values()) {
+      System.out.print("Stage: " + stage.getName() + ", duration:" + stage.getDuration() + ", ");
+      System.out.println(stage.getDemands());
 
       System.out.print("Maximum Parallel Tasks:" + stage.getNumTasks());
 
       System.out.print("  Parents: ");
-      for (String parent : stage.parents.keySet())
+      for (String parent : stage.getParentStages())
         System.out.print(parent + ", ");
       System.out.println();
     }
 
     System.out.println("== CP ==");
-    System.out.println(stageCPLength);
+    System.out.println(stageCPLength_);
   }
 
   public void populateParentsAndChildrenStructure(String stage_src,
-      String stage_dst, String comm_pattern) {
+      String stage_dst) {
 
-    if (!stages.containsKey(stage_src) || !stages.containsKey(stage_dst)) {
+    if (!stages_.containsKey(stage_src) || !stages_.containsKey(stage_dst)) {
       LOG.severe("A stage entry for " + stage_src + " or " + stage_dst
           + " should be already inserted !!!");
       return;
     }
-    if (stages.get(stage_src).children.containsKey(stage_dst)) {
+    if (stages_.get(stage_src).isParentOf(stage_dst)) {
       LOG.severe("An edge b/w " + stage_src + " and " + stage_dst
           + " is already present.");
       return;
     }
-    Dependency d = new Dependency(stage_src, stage_dst, comm_pattern);
-    //    stages.get(stage_src).vids, stages.get(stage_dst).vids);
-
-    stages.get(stage_src).children.put(stage_dst, d);
-    stages.get(stage_dst).parents.put(stage_src, d);
+    stages_.get(stage_src).addChildStage(stage_dst);
+    stages_.get(stage_dst).addParentStage(stage_src);
   }
 
   public void addRunnableTask(int taskId, String stageName, int machineId) {
     this.runnableTasks.add(taskId);
-    this.vertexToStage.put(taskId, stageName);
+    this.taskToStageMap_.put(taskId, stageName);
     this.taskToMachine_.put(taskId, machineId);
   }
 
@@ -240,31 +244,31 @@ public class StageDag extends BaseDag {
 
   // DAG traversals //
   public void setCriticalPaths() {
-    if (stageCPLength == null) {
-      stageCPLength = new HashMap<>();
+    if (stageCPLength_ == null) {
+      stageCPLength_ = new HashMap<>();
     }
-    for (String stageName : stages.keySet()) {
+    for (String stageName : stages_.keySet()) {
       longestCriticalPath(stageName);
     }
   }
 
   public double getMaxCP() {
-    return Collections.max(stageCPLength.values());
+    return Collections.max(stageCPLength_.values());
   }
 
   public double longestCriticalPath(String stageName) {
-    if (stageCPLength != null && stageCPLength.containsKey(stageName)) {
-      return stageCPLength.get(stageName);
+    if (stageCPLength_ != null && stageCPLength_.containsKey(stageName)) {
+      return stageCPLength_.get(stageName);
     }
 
-    if (stageCPLength == null) {
-      stageCPLength = new HashMap<String, Double>();
+    if (stageCPLength_ == null) {
+      stageCPLength_ = new HashMap<String, Double>();
     }
 
     double maxChildCP = Double.MIN_VALUE;
-    // String stageName = this.vertexToStage.get(taskId);
+    // String stageName = this.taskToStageMap_.get(taskId);
 
-    Set<String> childrenStages = stages.get(stageName).children.keySet();
+    Set<String> childrenStages = stages_.get(stageName).getChildStages();
     // System.out.println("Children: "+children);
     if (childrenStages.size() == 0) {
       maxChildCP = 0;
@@ -277,83 +281,55 @@ public class StageDag extends BaseDag {
       }
     }
 
-    double cp = maxChildCP + stages.get(stageName).vDuration;
-    if (!stageCPLength.containsKey(stageName)) {
-      stageCPLength.put(stageName, cp);
+    double cp = maxChildCP + stages_.get(stageName).getDuration();
+    if (!stageCPLength_.containsKey(stageName)) {
+      stageCPLength_.put(stageName, cp);
     }
 
-    return stageCPLength.get(stageName);
+    return stageCPLength_.get(stageName);
   }
 
   public void printCPLength() {
     System.out.println("DagID:" + dagId + " critical path lengths");
-    for (Map.Entry<String, Double> entry : stageCPLength.entrySet()) {
+    for (Map.Entry<String, Double> entry : stageCPLength_.entrySet()) {
       System.out.println("task ID:" + entry.getKey() + ", cp length:" + entry.getValue());
     }
   }
 
   public double getCPLength(int taskId) {
-    return stageCPLength.get(this.vertexToStage.get(taskId));
+    return stageCPLength_.get(this.taskToStageMap_.get(taskId));
   }
 
 
   @Override
   public Resources rsrcDemands(int taskId) {
-    if (adjustedTaskDemands != null && adjustedTaskDemands.get(taskId) != null) {
-      return adjustedTaskDemands.get(taskId).resDemands;
-    }
-    return stages.get(vertexToStage.get(taskId)).rsrcDemandsPerTask();
+    return stages_.get(taskToStageMap_.get(taskId)).rsrcDemandsPerTask();
   }
 
   @Override
   public double duration(int taskId) {
-    return stages.get(vertexToStage.get(taskId)).vDuration;
+    return stages_.get(taskToStageMap_.get(taskId)).getDuration();
   }
 
   @Override
   public Set<Integer> allTasks() {
-    return vertexToStage.keySet();
+    return taskToStageMap_.keySet();
   }
 
   public int numTotalTasks() {
     int n = 0;
-    for (Stage stage : stages.values()) {
+    for (Stage stage : stages_.values()) {
       n += stage.getNumTasks();
     }
     return n;
   }
 
-  public Set<Integer> remTasksToSchedule() {
-    Set<Integer> allTasks = new HashSet<Integer>(vertexToStage.keySet());
-    Set<Integer> consideredTasks = new HashSet<Integer>(this.finishedTasks);
-    consideredTasks.addAll(this.runningTasks);
-    allTasks.removeAll(consideredTasks);
-    return allTasks;
-  }
-
   public Resources totalResourceDemand() {
     Resources totalResDemand = new Resources(0.0);
-    for (Stage stage : stages.values()) {
+    for (Stage stage : stages_.values()) {
       totalResDemand.sum(stage.totalWork());
     }
     return totalResDemand;
-  }
-
-  public Resources totalWorkInclDur() {
-    Resources totalResDemand = new Resources(0.0);
-    for (Stage stage : stages.values()) {
-      totalResDemand.sum(stage.totalWork());
-    }
-    return totalResDemand;
-  }
-
-  @Override
-  public double totalWorkJob() {
-    double scoreTotalWork = 0;
-    for (Stage stage : stages.values()) {
-      scoreTotalWork += stage.stageContribToSrtfScore(new HashSet<Integer>());
-    }
-    return scoreTotalWork;
   }
 
   // should decrease only the resources allocated in the current time quanta
@@ -376,5 +352,17 @@ public class StageDag extends BaseDag {
     jObj.put("num_killed_tasks", killedTasks_.size());
     jObj.put("num_finished_tasks", finishedTasks.size());
     return jObj;
+  }
+
+  public String findStageByTaskID(int taskId) {
+    return this.taskToStageMap_.get(taskId);
+  }
+
+  public Stage getStageByName(String stageName) {
+    return this.stages_.get(stageName);
+  }
+
+  public Stage addStage(String stageName, Stage stage) {
+    return this.stages_.put(stageName, stage);
   }
 }

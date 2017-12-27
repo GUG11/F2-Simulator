@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 import java.util.logging.Logger;
 
-class StageOutput {
+public class StageOutput {
   private int numMachines_;
   private int[] machineIds_;
   private int numGlobalPart_;

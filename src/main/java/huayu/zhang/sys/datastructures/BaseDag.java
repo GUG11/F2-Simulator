@@ -9,7 +9,6 @@ public abstract class BaseDag {
   protected int dagId;
   private double timeArrival_;
 
-  public abstract double totalWorkJob();
   public abstract Resources rsrcDemands(int task_id);
 
   public abstract double duration(int task_id);

@@ -72,7 +72,7 @@ public class CPSchedPolicy extends SchedPolicy {
         dag.launchedTasksNow.add(taskId);
         iter.remove();
         dag.runnableTasks.remove(taskId);
-        String stage = dag.vertexToStage.get(taskId);
+        String stage = dag.findStageByTaskID(taskId);
         if (!dag.isRunningStage(stage)) {
           dag.moveRunnableToRunning(stage);
         }

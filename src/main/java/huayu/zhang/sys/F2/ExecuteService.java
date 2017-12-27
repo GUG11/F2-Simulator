@@ -124,10 +124,10 @@ public class ExecuteService {
       int totalNumTasks = 0;
       for(String stageName : newRunnableStageNameSet) {
         dag.addRunnableStage(stageName);
-        Stage stage = dag.stages.get(stageName);
+        Stage stage = dag.getStageByName(stageName);
         int numTasks = stage.getNumTasks();
         totalNumTasks = numTasks;
-        if (stage.parents.isEmpty()) {    // start stages
+        if (stage.getParentStages().isEmpty()) {    // start stages
           double[] keySizesPerTask = Arrays.stream(dag.getInputKeySize()).map(v -> v / stage.getNumTasks()).toArray();
           while (0 < numTasks--) {
             taskId = nextId_;
@@ -148,7 +148,7 @@ public class ExecuteService {
           totalNumTasks = 0;
           // System.out.println("availablePartitions_=" + availablePartitions_);
           // TODO: multiple parents
-          Set<String> parents = dag.stages.get(stageName).parents.keySet();
+          Set<String> parents = dag.getStageByName(stageName).getParentStages();
           assert parents.size() == 1;
           String parent = parents.iterator().next();
           System.out.println("dagId=" + dagId + ", stageName=" + stageName + ", parent(s)=" + parent);
@@ -282,7 +282,7 @@ public class ExecuteService {
     Map<Integer, Double> data = taskOutputs_.get(taskId);
     taskOutputs_.remove(taskId);
     StageDag dag = getDagById(dagId);
-    String stageName = dag.vertexToStage.get(taskId);
+    String stageName = dag.findStageByTaskID(taskId);
     // decrease the num task until 0
     LOG.info("Current dag stage num task map:" + dagStageNumTaskMap_ + ". Now choose dag:" + dagId + ",stage:"+ stageName);
     int numRemaingTasks = dagStageNumTaskMap_.get(dagId).get(stageName) - 1;
@@ -294,13 +294,13 @@ public class ExecuteService {
       dagStageNumTaskMap_.get(dagId).put(stageName, numRemaingTasks);
     }
     // get parent
-    Set<String> parentStages = dag.stages.get(stageName).parents.keySet();
+    Set<String> parentStages = dag.getStageByName(stageName).getParentStages();
     String parent = "";
     if (!parentStages.isEmpty()) {
       parent = parentStages.iterator().next();  // assume linear graph
     }
     SpillEvent spill = new SpillEvent(data, lastSpill, dagId, stageName, taskId, currentTime, parent);
-    boolean endStage = dag.stages.get(stageName).children.isEmpty();
+    boolean endStage = dag.isLeaf(stageName);
     if (!endStage) {
       LOG.info("new spill event: " + spill);
       spillEventQueue.add(spill);
